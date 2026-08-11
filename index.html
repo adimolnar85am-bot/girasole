@@ -1,0 +1,348 @@
+﻿<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Girasole · Panini e Caffè · București</title>
+    <meta
+      name="description"
+      content="Girasole Panini e Caffè — panini artizanale și cafea pe Strada Austrului nr. 1, București. Rezervă o masă."
+    />
+    <link rel="icon" href="assets/logo.png?v=6" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css?v=6" />
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="Girasole — acasă">
+        <img src="assets/logo.png?v=6" alt="Girasole Panini e Caffè" width="160" height="160" />
+      </a>
+      <nav class="nav" aria-label="Navigare principală">
+        <a href="#despre">Despre</a>
+        <a href="#saptamana">Săptămâna</a>
+        <a href="#meniu">Meniu</a>
+        <a href="#rezervari">Rezervări</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a class="header-cta" href="#rezervari">Rezervă</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" data-nav-toggle>
+        <span class="sr-only">Meniu</span>
+        <span></span><span></span>
+      </button>
+    </header>
+
+    <div class="mobile-nav" id="mobile-nav" data-mobile-nav hidden>
+      <a href="#despre">Despre</a>
+      <a href="#saptamana">Săptămâna</a>
+      <a href="#meniu">Meniu</a>
+      <a href="#rezervari">Rezervări</a>
+      <a href="#contact">Contact</a>
+    </div>
+
+    <main id="top">
+      <section class="hero" aria-label="Introducere">
+        <div class="hero-media" aria-hidden="true">
+          <img src="assets/coffee.jpg" alt="" class="hero-img is-active" data-hero-slide />
+          <img src="assets/detail.jpg" alt="" class="hero-img" data-hero-slide />
+          <div class="hero-veil"></div>
+        </div>
+        <div class="hero-content">
+          <img class="hero-logo" src="assets/logo.png?v=6" alt="Girasole Panini e Caffè" />
+          <h1 class="sr-only">Girasole Panini e Caffè</h1>
+          <p class="hero-line">Panini artizanale și cafea, pe Strada Austrului.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#saptamana">This week's menu</a>
+            <a class="btn btn-ghost" href="#rezervari">Rezervă</a>
+          </div>
+        </div>
+        <a class="scroll-hint" href="#despre" aria-label="Derulează în jos">
+          <span class="scroll-hint-label">Scroll</span>
+          <span class="scroll-hint-icon" aria-hidden="true"></span>
+        </a>
+      </section>
+
+      <section class="section about" id="despre">
+        <div class="section-grid">
+          <div class="about-copy reveal">
+            <p class="eyebrow">Panini e Caffè</p>
+            <h2>Un colț liniștit pentru detalii bine făcute.</h2>
+            <p>
+              La Girasole pregătim panini cu pâine crocantă și cafea testată până la
+              ultimul detaliu — un spațiu luminos pe Strada Austrului nr. 1, în București.
+            </p>
+          </div>
+          <figure class="about-figure reveal">
+            <img src="assets/detail.jpg" alt="Panini proaspete cu rucola și prosciutto" />
+          </figure>
+        </div>
+      </section>
+
+      <section class="gallery" aria-label="Atmosferă">
+        <div class="gallery-track">
+          <figure>
+            <img src="assets/coffee.jpg" alt="Interior Girasole cu bar și meniu săptămânal" />
+          </figure>
+          <figure>
+            <img src="assets/hero.jpg" alt="Pregătirea cafelei pe mașina espresso" />
+          </figure>
+          <figure>
+            <img src="assets/mural.jpg" alt="Detaliu din spațiul Girasole" />
+          </figure>
+          <figure>
+            <img src="assets/panini.jpg" alt="Ilustrație lemon tree Girasole" />
+          </figure>
+        </div>
+      </section>
+
+      <section class="section weekly" id="saptamana">
+        <div class="weekly-layout">
+          <figure class="weekly-media reveal">
+            <img src="assets/coffee.jpg" alt="Barul Girasole — meet this week's menu" />
+            <figcaption>meet this week's menu</figcaption>
+          </figure>
+          <div class="weekly-copy reveal">
+            <p class="eyebrow">This week's menu</p>
+            <h2>Ce găsești săptămâna asta</h2>
+            <p>
+              Selecție scurtă, proaspătă — actualizăm lista în fiecare săptămână.
+              Urmărește și vitrina de pe Instagram.
+            </p>
+            <ul class="weekly-list">
+              <li>
+                <span class="item-name">Panini Prosciutto &amp; Rucola</span>
+                <span class="item-desc">Prosciutto, rucola, mozzarella, ulei de măsline</span>
+              </li>
+              <li>
+                <span class="item-name">Panini Caprese</span>
+                <span class="item-desc">Roșii coapte, mozzarella, busuioc, pesto</span>
+              </li>
+              <li>
+                <span class="item-name">Panini Tonno</span>
+                <span class="item-desc">Ton, ceapă roșie, lămâie, ierburi</span>
+              </li>
+              <li>
+                <span class="item-name">Iced Latte Girasole</span>
+                <span class="item-desc">Espresso, lapte, gheață — rețeta săptămânii</span>
+              </li>
+            </ul>
+            <a class="text-link" href="https://www.instagram.com/girasole.bucuresti/" target="_blank" rel="noopener noreferrer"
+              >Vezi meniul pe Instagram</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="section menu" id="meniu">
+        <div class="menu-intro reveal">
+          <p class="eyebrow">Meniu</p>
+          <h2>Panini e Caffè</h2>
+          <p>Bazele pe care le găsești aproape mereu la bar — simple, clare, făcute pe loc.</p>
+        </div>
+
+        <div class="menu-columns">
+          <div class="menu-col reveal">
+            <h3>Panini</h3>
+            <ul class="menu-list">
+              <li>
+                <div class="menu-line">
+                  <span>Prosciutto</span>
+                  <span class="menu-price">32 lei</span>
+                </div>
+                <p>Prosciutto crudo, rucola, mozzarella</p>
+              </li>
+              <li>
+                <div class="menu-line">
+                  <span>Caprese</span>
+                  <span class="menu-price">30 lei</span>
+                </div>
+                <p>Mozzarella, roșii, busuioc</p>
+              </li>
+              <li>
+                <div class="menu-line">
+                  <span>Vegetariano</span>
+                  <span class="menu-price">28 lei</span>
+                </div>
+                <p>Legume la cuptor, pesto, mozzarella</p>
+              </li>
+              <li>
+                <div class="menu-line">
+                  <span>Tonno</span>
+                  <span class="menu-price">31 lei</span>
+                </div>
+                <p>Ton, ceapă roșie, lămâie</p>
+              </li>
+              <li>
+                <div class="menu-line">
+                  <span>Formaggi</span>
+                  <span class="menu-price">29 lei</span>
+                </div>
+                <p>Mix de brânzeturi, miere, nuci</p>
+              </li>
+            </ul>
+          </div>
+
+          <div class="menu-col reveal">
+            <h3>Caffè</h3>
+            <ul class="menu-list">
+              <li>
+                <div class="menu-line">
+                  <span>Espresso</span>
+                  <span class="menu-price">10 lei</span>
+                </div>
+                <p>Simplu, dublu la cerere</p>
+              </li>
+              <li>
+                <div class="menu-line">
+                  <span>Americano</span>
+                  <span class="menu-price">12 lei</span>
+                </div>
+                <p>Espresso lungit cu apă fierbinte</p>
+              </li>
+              <li>
+                <div class="menu-line">
+                  <span>Cappuccino</span>
+                  <span class="menu-price">14 lei</span>
+                </div>
+                <p>Espresso, lapte texturat</p>
+              </li>
+              <li>
+                <div class="menu-line">
+                  <span>Latte</span>
+                  <span class="menu-price">15 lei</span>
+                </div>
+                <p>Espresso, lapte, spumă fină</p>
+              </li>
+              <li>
+                <div class="menu-line">
+                  <span>Iced Latte</span>
+                  <span class="menu-price">16 lei</span>
+                </div>
+                <p>Espresso, lapte, gheață</p>
+              </li>
+              <li>
+                <div class="menu-line">
+                  <span>Filtru / Batch</span>
+                  <span class="menu-price">13 lei</span>
+                </div>
+                <p>Cafea de filtru a zilei</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="menu-footnote reveal">
+          Prețurile sunt orientative. Pentru alergii sau preferințe, întreabă-ne la bar.
+        </p>
+      </section>
+
+      <section class="section reserve" id="rezervari">
+        <div class="reserve-layout">
+          <div class="reserve-intro reveal">
+            <p class="eyebrow">Rezervări</p>
+            <h2>Rezervă o masă</h2>
+            <p>
+              Spune-ne când vii — îți confirmăm rezervarea pe email sau telefon
+              în cel mai scurt timp.
+            </p>
+          </div>
+
+          <form class="reserve-form reveal" id="reservation-form" novalidate>
+            <div class="field-row">
+              <label>
+                <span>Nume</span>
+                <input type="text" name="name" autocomplete="name" required placeholder="Numele tău" />
+              </label>
+              <label>
+                <span>Telefon</span>
+                <input type="tel" name="phone" autocomplete="tel" required placeholder="+40…" />
+              </label>
+            </div>
+            <div class="field-row">
+              <label>
+                <span>Email</span>
+                <input type="email" name="email" autocomplete="email" required placeholder="email@exemplu.ro" />
+              </label>
+              <label>
+                <span>Persoane</span>
+                <select name="guests" required>
+                  <option value="1">1</option>
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6+</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label>
+                <span>Data</span>
+                <input type="date" name="date" required />
+              </label>
+              <label>
+                <span>Ora</span>
+                <input type="time" name="time" required value="12:00" />
+              </label>
+            </div>
+            <label class="field-full">
+              <span>Mesaj (opțional)</span>
+              <textarea name="message" rows="3" placeholder="Preferințe, ocazie specială…"></textarea>
+            </label>
+            <button class="btn btn-primary" type="submit">Trimite rezervarea</button>
+            <p class="form-note" data-form-status role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="section contact" id="contact">
+        <div class="contact-layout">
+          <div class="contact-copy reveal">
+            <p class="eyebrow">Contact</p>
+            <h2>Ne găsești pe Austrului</h2>
+            <address>
+              <strong>Girasole Panini e Caffè</strong><br />
+              Strada Austrului nr. 1<br />
+              București
+            </address>
+            <dl class="hours">
+              <div>
+                <dt>Program</dt>
+                <dd>Luni–Duminică · 09:00–18:00</dd>
+              </div>
+              <div>
+                <dt>Instagram</dt>
+                <dd>
+                  <a href="https://www.instagram.com/girasole.bucuresti/" target="_blank" rel="noopener noreferrer"
+                    >@girasole.bucuresti</a
+                  >
+                </dd>
+              </div>
+            </dl>
+            <p class="hours-note">Programul poate varia — verifică highlight-ul „program” pe Instagram.</p>
+          </div>
+          <div class="contact-map reveal">
+            <iframe
+              title="Hartă Girasole — Strada Austrului nr. 1, București"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://maps.google.com/maps?q=Strada%20Austrului%20nr.%201%2C%20Bucuresti&t=&z=16&ie=UTF8&iwloc=&output=embed"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <img src="assets/logo.png?v=6" alt="" class="footer-logo" width="88" height="88" />
+      <p>Girasole · Panini e Caffè · București</p>
+      <a href="https://www.instagram.com/girasole.bucuresti/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </footer>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>
