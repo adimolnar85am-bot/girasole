@@ -2,20 +2,26 @@
 
 Site minimal pentru [Girasole București](https://www.instagram.com/girasole.bucuresti/).
 
-## Pornire
+**Repo:** https://github.com/adimolnar85am-bot/girasole
 
-Deschide `index.html` în browser, sau din folder:
+## Pe alt device
 
 ```bash
-npx --yes serve .
+git clone https://github.com/adimolnar85am-bot/girasole.git
+cd girasole
 ```
+
+Deschide folderul în Cursor, apoi `index.html` în browser.
+
+## Local
+
+Deschide `index.html` în browser.
 
 ## Conținut
 
-- Hero cu logo și imagini din Instagram
-- Secțiune despre
-- Galerie
-- Formular de rezervări (trimite prin `mailto`)
+- Hero cu logo și imagini
+- This week's menu + meniu Panini / Caffè
+- Formular rezervări
 - Contact + hartă (Strada Austrului nr. 1)
 
-Actualizează programul, emailul din formular (`hello@girasole.bucuresti`) și datele de contact când le ai definitive.
+Actualizează programul, emailul din formular și datele de contact când le ai definitive.
