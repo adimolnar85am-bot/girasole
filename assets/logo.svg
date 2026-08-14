@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 280" role="img" aria-label="Girasole Panini e Caffe">
+  <g transform="translate(160 108)" stroke="#e5b73b" stroke-width="2.2" stroke-linecap="round" fill="none">
+    <path d="M-34 18a34 34 0 0 1 68 0"/>
+    <path d="M-34 18c-10-18-8-34-8-34s14 8 22 26"/>
+    <path d="M-18-8c-6-18-2-32-2-32s12 10 16 28"/>
+    <path d="M0-18c0-20 8-30 8-30s6 14 2 32"/>
+    <path d="M18-8c4-18 16-28 16-28s4 14-6 32"/>
+    <path d="M34 18c10-18 24-26 24-26s-2 16-12 32"/>
+    <path d="M-34 18c10 18 24 26 24 26s-2-16-12-32"/>
+    <path d="M34 18c-10 18-24 26-24 26s2-16 12-32"/>
+  </g>
+  <path fill="#e5b73b" d="M126 108a34 34 0 0 0 68 0 34 34 0 0 0-68 0Z"/>
+  <text x="160" y="198" text-anchor="middle" fill="#2e471c" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="700" letter-spacing="6">GIRASOLE</text>
+  <text x="160" y="238" text-anchor="middle" fill="#8a8278" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" letter-spacing="4.5">PANINI E CAFF&#200;</text>
+</svg>

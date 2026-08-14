@@ -246,8 +246,9 @@ a:hover {
 }
 
 .hero-logo {
-  width: min(220px, 58vw);
+  width: min(240px, 72vw);
   height: auto;
+  aspect-ratio: 320 / 280;
   margin: 0 0 1.35rem;
   filter: drop-shadow(0 12px 28px rgba(36, 59, 0, 0.22));
   animation: rise 1.2s 0.08s var(--ease) both;
@@ -255,7 +256,8 @@ a:hover {
 
 .brand img,
 .footer-logo {
-  background: transparent;
+  height: auto;
+  aspect-ratio: 320 / 280;
 }
 
 .hero-line {
@@ -965,8 +967,8 @@ textarea {
   }
 
   .hero-logo {
-    width: min(200px, 78vw);
-    max-width: 240px;
+    width: min(220px, 82vw);
+    max-width: 260px;
     margin-bottom: 1.1rem;
   }
 
