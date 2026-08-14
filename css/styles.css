@@ -246,16 +246,17 @@ a:hover {
 }
 
 .hero-logo {
-  width: min(220px, 58vw);
+  width: min(200px, 70vw);
   height: auto;
   margin: 0 0 1.35rem;
-  filter: drop-shadow(0 12px 28px rgba(36, 59, 0, 0.22));
+  border-radius: 4px;
+  box-shadow: 0 16px 40px rgba(36, 59, 0, 0.28);
   animation: rise 1.2s 0.08s var(--ease) both;
 }
 
 .brand img,
 .footer-logo {
-  background: transparent;
+  height: auto;
 }
 
 .hero-line {
@@ -965,9 +966,17 @@ textarea {
   }
 
   .hero-logo {
-    width: min(200px, 78vw);
-    max-width: 240px;
+    width: min(190px, 76vw);
+    max-width: 220px;
     margin-bottom: 1.1rem;
+  }
+
+  .brand img {
+    width: 2.6rem;
+  }
+
+  .footer-logo {
+    width: 5.5rem;
   }
 
   .hero-line {
