@@ -30,14 +30,20 @@ Proprietarul site-ului poate edita tot conținutul (texte, meniuri, contact, ima
    - Creează un token (classic sau fine-grained) cu permisiune **Contents: Read and write** pe repo-ul `girasole`
    - Copiază token-ul
 
-2. **Vercel Dashboard** → proiectul `girasole` → **Settings** → **Environment Variables**:
-   - `ADMIN_PASSWORD` — parola ta pentru login
-   - `ADMIN_SECRET` — un șir lung aleator (ex. `openssl rand -hex 32`)
+2. **Vercel Dashboard** → proiectul `girasole` → **Settings** → **Environment Variables** (doar pentru salvare):
    - `GITHUB_TOKEN` — token-ul GitHub de mai sus
    - `GITHUB_REPO` — opțional, implicit `adimolnar85am-bot/girasole`
    - `GITHUB_BRANCH` — opțional, implicit `master`
 
+   Opțional (suprascriu parola din repo): `ADMIN_PASSWORD`, `ADMIN_SECRET`
+
 3. **Redeploy** după setarea variabilelor
+
+### Parolă admin
+
+Parola implicită este **`girasole2026`** (fără majuscule, fără semne speciale).
+
+Poți schimba parola editând `data/admin-config.json` în repo sau setând `ADMIN_PASSWORD` în Vercel.
 
 ### Utilizare
 

@@ -41,7 +41,12 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "login", password }),
     });
-    const data = await res.json();
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error("Serverul admin nu răspunde. Reîncarcă pagina.");
+    }
     if (!res.ok) throw new Error(data.error || "Autentificare eșuată.");
     return data.token;
   }
