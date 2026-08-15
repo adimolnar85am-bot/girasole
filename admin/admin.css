@@ -32,6 +32,11 @@ body {
   padding: 1.5rem;
 }
 
+.login-screen[hidden],
+.admin-app[hidden] {
+  display: none !important;
+}
+
 .login-card {
   width: min(420px, 100%);
   padding: 2rem;
@@ -250,6 +255,10 @@ textarea {
   margin: 0;
   font-size: 0.9rem;
   color: var(--danger);
+}
+
+.form-msg.is-loading {
+  color: var(--muted);
 }
 
 .panel-actions {

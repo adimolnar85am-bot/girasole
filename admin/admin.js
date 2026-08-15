@@ -24,7 +24,8 @@
   const adminMain = document.getElementById("admin-main");
   const saveBtn = document.getElementById("save-btn");
   const saveStatus = document.getElementById("save-status");
-  const logoutBtn = document.getElementById("logout-btn");
+  const loginPassword = document.getElementById("login-password");
+  const loginSubmit = loginForm?.querySelector('button[type="submit"]');
 
   function getToken() {
     return sessionStorage.getItem(TOKEN_KEY);
@@ -291,15 +292,29 @@
     renderPanels();
   }
 
-  loginForm.addEventListener("submit", async (e) => {
+  loginForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     loginMsg.textContent = "";
+    loginMsg.classList.remove("is-loading", "is-error");
+    if (loginSubmit) {
+      loginSubmit.disabled = true;
+      loginSubmit.textContent = "Se autentifică…";
+    }
+    loginMsg.textContent = "Se autentifică…";
+    loginMsg.classList.add("is-loading");
     try {
-      const token = await apiLogin(document.getElementById("login-password").value);
+      const token = await apiLogin(loginPassword?.value || "");
       setToken(token);
       await bootAdmin();
     } catch (err) {
+      loginMsg.classList.remove("is-loading");
+      loginMsg.classList.add("is-error");
       loginMsg.textContent = err.message;
+    } finally {
+      if (loginSubmit) {
+        loginSubmit.disabled = false;
+        loginSubmit.textContent = "Intră";
+      }
     }
   });
 
