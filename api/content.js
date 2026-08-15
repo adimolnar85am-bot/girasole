@@ -2,12 +2,73 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
-const BLOB_PATH = "girasole/site-content.json";
+const CONTENT_PATH = "data/site-content.json";
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 function readLocalDefault() {
   const filePath = path.join(process.cwd(), "data", "site-content.json");
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+function getGitHubConfig() {
+  const repo = process.env.GITHUB_REPO || "adimolnar85am-bot/girasole";
+  const branch = process.env.GITHUB_BRANCH || "master";
+  const token = process.env.GITHUB_TOKEN;
+  const [owner, repoName] = repo.split("/");
+  if (!owner || !repoName) throw new Error("GITHUB_REPO_INVALID");
+  return { owner, repoName, branch, token };
+}
+
+function githubHeaders(token) {
+  const headers = {
+    Accept: "application/vnd.github+json",
+    "User-Agent": "girasole-admin",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+}
+
+async function readFromGitHub() {
+  const { owner, repoName, branch, token } = getGitHubConfig();
+  const url = `https://api.github.com/repos/${owner}/${repoName}/contents/${CONTENT_PATH}?ref=${encodeURIComponent(branch)}`;
+  const res = await fetch(url, { headers: githubHeaders(token), cache: "no-store" });
+  if (res.status === 404) return null;
+  if (!res.ok) return null;
+  const file = await res.json();
+  if (!file.content) return null;
+  const content = Buffer.from(file.content.replace(/\n/g, ""), "base64").toString("utf8");
+  return { data: JSON.parse(content), sha: file.sha };
+}
+
+async function writeToGitHub(data, sha) {
+  const { owner, repoName, branch, token } = getGitHubConfig();
+  if (!token) throw new Error("GITHUB_NOT_CONFIGURED");
+
+  const url = `https://api.github.com/repos/${owner}/${repoName}/contents/${CONTENT_PATH}`;
+  const body = {
+    message: "Actualizare conținut site (admin Girasole)",
+    content: Buffer.from(JSON.stringify(data, null, 2)).toString("base64"),
+    branch,
+  };
+  if (sha) body.sha = sha;
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      ...githubHeaders(token),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (res.status === 409) {
+    throw new Error("CONFLICT");
+  }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || "GITHUB_WRITE_FAILED");
+  }
 }
 
 function signToken() {
@@ -33,34 +94,6 @@ function verifyToken(token) {
   }
 }
 
-async function readFromBlob() {
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) return null;
-  try {
-    const { list } = await import("@vercel/blob");
-    const { blobs } = await list({ prefix: BLOB_PATH, token });
-    const match = blobs.find((b) => b.pathname === BLOB_PATH);
-    if (!match) return null;
-    const res = await fetch(match.url, { cache: "no-store" });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-}
-
-async function writeToBlob(data) {
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) throw new Error("BLOB_NOT_CONFIGURED");
-  const { put } = await import("@vercel/blob");
-  await put(BLOB_PATH, JSON.stringify(data, null, 2), {
-    access: "public",
-    addRandomSuffix: false,
-    token,
-    contentType: "application/json",
-  });
-}
-
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, OPTIONS");
@@ -82,8 +115,8 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === "GET") {
-    const blobData = await readFromBlob();
-    const content = blobData || readLocalDefault();
+    const github = await readFromGitHub();
+    const content = github?.data || readLocalDefault();
     return res.status(200).json(content);
   }
 
@@ -95,12 +128,18 @@ module.exports = async (req, res) => {
     }
     try {
       const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-      await writeToBlob(body);
+      const existing = await readFromGitHub();
+      await writeToGitHub(body, existing?.sha);
       return res.status(200).json({ ok: true });
     } catch (err) {
-      if (err.message === "BLOB_NOT_CONFIGURED") {
+      if (err.message === "GITHUB_NOT_CONFIGURED") {
         return res.status(503).json({
-          error: "Salvarea necesită BLOB_READ_WRITE_TOKEN în Vercel (Settings → Storage → Blob).",
+          error: "Salvarea necesită GITHUB_TOKEN în Vercel (token GitHub cu acces de scriere la repo).",
+        });
+      }
+      if (err.message === "CONFLICT") {
+        return res.status(409).json({
+          error: "Fișierul a fost modificat între timp. Reîncarcă pagina admin și încearcă din nou.",
         });
       }
       return res.status(500).json({ error: "Nu am putut salva conținutul." });
