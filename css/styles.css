@@ -970,6 +970,7 @@ textarea {
   .hero-veil {
     background:
       linear-gradient(180deg, rgba(36, 59, 0, 0.35) 0%, rgba(36, 59, 0, 0.12) 22%, rgba(36, 59, 0, 0.5) 62%, rgba(36, 59, 0, 0.88) 100%),
+      radial-gradient(ellipse 120% 70% at 50% 100%, rgba(255, 252, 246, 0.42), transparent 58%),
       radial-gradient(ellipse at 50% 28%, rgba(229, 183, 59, 0.12), transparent 52%);
   }
 
@@ -978,10 +979,15 @@ textarea {
     padding-bottom: clamp(4.75rem, 11vh, 6.25rem);
   }
 
+  .hero-logo-panel {
+    margin-bottom: 1.1rem;
+    padding: 0.85rem 1rem;
+    background: rgba(255, 252, 246, 0.82);
+  }
+
   .hero-logo {
     width: min(190px, 76vw);
     max-width: 220px;
-    margin-bottom: 1.1rem;
   }
 
   .brand img {

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin · Girasole</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <div id="login-screen" class="login-screen">
+      <form id="login-form" class="login-card">
+        <h1>Girasole Admin</h1>
+        <p>Autentifică-te pentru a edita conținutul site-ului.</p>
+        <label>
+          <span>Parolă</span>
+          <input type="password" id="login-password" autocomplete="current-password" required />
+        </label>
+        <button type="submit" class="btn btn-primary">Intră</button>
+        <p class="form-msg" id="login-msg" role="status"></p>
+      </form>
+    </div>
+
+    <div id="admin-app" class="admin-app" hidden>
+      <header class="admin-header">
+        <div>
+          <h1>Girasole · Admin</h1>
+          <p>Editează textele, meniurile și datele de contact.</p>
+        </div>
+        <div class="admin-header-actions">
+          <a class="btn btn-ghost" href="/" target="_blank" rel="noopener">Vezi site-ul</a>
+          <button type="button" class="btn btn-primary" id="save-btn">Salvează modificările</button>
+          <button type="button" class="btn btn-ghost" id="logout-btn">Deconectare</button>
+        </div>
+      </header>
+
+      <p class="save-status" id="save-status" role="status"></p>
+
+      <nav class="admin-nav" id="admin-nav"></nav>
+
+      <main class="admin-main" id="admin-main"></main>
+    </div>
+
+    <script src="admin.js"></script>
+  </body>
+</html>

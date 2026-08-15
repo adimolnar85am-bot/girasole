@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "title": "Girasole · Panini e Caffè · București",
+    "description": "Girasole Panini e Caffè — panini artizanale și cafea pe Strada Austrului nr. 1, București. Rezervă o masă."
+  },
+  "hero": {
+    "line": "Panini artizanale și cafea, pe Strada Austrului.",
+    "ctaPrimary": "Meniul săptămânii",
+    "ctaSecondary": "Rezervă",
+    "slides": ["assets/coffee.jpg", "assets/detail.jpg"]
+  },
+  "about": {
+    "eyebrow": "Panini e Caffè",
+    "title": "Un colț liniștit pentru detalii bine făcute.",
+    "text": "La Girasole pregătim panini cu pâine crocantă și cafea testată până la ultimul detaliu — un spațiu luminos pe Strada Austrului nr. 1, în București.",
+    "image": "assets/detail.jpg",
+    "imageAlt": "Panini proaspete cu rucola și prosciutto"
+  },
+  "gallery": [
+    { "src": "assets/coffee.jpg", "alt": "Interior Girasole cu bar și meniu săptămânal" },
+    { "src": "assets/hero.jpg", "alt": "Pregătirea cafelei pe mașina espresso" },
+    { "src": "assets/mural.jpg", "alt": "Detaliu din spațiul Girasole" },
+    { "src": "assets/panini.jpg", "alt": "Ilustrație lemon tree Girasole" }
+  ],
+  "weekly": {
+    "eyebrow": "Meniul săptămânii",
+    "title": "Ce găsești săptămâna asta",
+    "text": "Selecție scurtă, proaspătă — actualizăm lista în fiecare săptămână. Urmărește și vitrina de pe Instagram.",
+    "image": "assets/coffee.jpg",
+    "imageAlt": "Barul Girasole — meniul săptămânii",
+    "caption": "meniul săptămânii",
+    "instagramUrl": "https://www.instagram.com/girasole.bucuresti/",
+    "instagramLabel": "Vezi meniul pe Instagram",
+    "items": [
+      { "name": "Panini Prosciutto & Rucola", "desc": "Prosciutto, rucola, mozzarella, ulei de măsline" },
+      { "name": "Panini Caprese", "desc": "Roșii coapte, mozzarella, busuioc, pesto" },
+      { "name": "Panini Tonno", "desc": "Ton, ceapă roșie, lămâie, ierburi" },
+      { "name": "Iced Latte Girasole", "desc": "Espresso, lapte, gheață — rețeta săptămânii" }
+    ]
+  },
+  "menu": {
+    "eyebrow": "Meniu",
+    "title": "Panini e Caffè",
+    "text": "Bazele pe care le găsești aproape mereu la bar — simple, clare, făcute pe loc.",
+    "footnote": "Prețurile sunt orientative. Pentru alergii sau preferințe, întreabă-ne la bar.",
+    "panini": [
+      { "name": "Prosciutto", "price": "32 lei", "desc": "Prosciutto crudo, rucola, mozzarella" },
+      { "name": "Caprese", "price": "30 lei", "desc": "Mozzarella, roșii, busuioc" },
+      { "name": "Vegetariano", "price": "28 lei", "desc": "Legume la cuptor, pesto, mozzarella" },
+      { "name": "Tonno", "price": "31 lei", "desc": "Ton, ceapă roșie, lămâie" },
+      { "name": "Formaggi", "price": "29 lei", "desc": "Mix de brânzeturi, miere, nuci" }
+    ],
+    "caffe": [
+      { "name": "Espresso", "price": "10 lei", "desc": "Simplu, dublu la cerere" },
+      { "name": "Americano", "price": "12 lei", "desc": "Espresso lungit cu apă fierbinte" },
+      { "name": "Cappuccino", "price": "14 lei", "desc": "Espresso, lapte texturat" },
+      { "name": "Latte", "price": "15 lei", "desc": "Espresso, lapte, spumă fină" },
+      { "name": "Iced Latte", "price": "16 lei", "desc": "Espresso, lapte, gheață" },
+      { "name": "Filtru / Batch", "price": "13 lei", "desc": "Cafea de filtru a zilei" }
+    ]
+  },
+  "reservations": {
+    "eyebrow": "Rezervări",
+    "title": "Rezervă o masă",
+    "text": "Spune-ne când vii — îți confirmăm rezervarea pe email sau telefon în cel mai scurt timp.",
+    "email": "hello@girasole.bucuresti"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Ne găsești pe Austrului",
+    "businessName": "Girasole Panini e Caffè",
+    "street": "Strada Austrului nr. 1",
+    "city": "București",
+    "hours": "Luni–Duminică · 09:00–18:00",
+    "instagramHandle": "@girasole.bucuresti",
+    "instagramUrl": "https://www.instagram.com/girasole.bucuresti/",
+    "hoursNote": "Programul poate varia — verifică highlight-ul „program” pe Instagram.",
+    "mapQuery": "Strada Austrului nr. 1, Bucuresti"
+  },
+  "footer": {
+    "text": "Girasole · Panini e Caffè · București",
+    "instagramUrl": "https://www.instagram.com/girasole.bucuresti/",
+    "instagramLabel": "Instagram"
+  }
+}

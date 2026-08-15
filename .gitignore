@@ -4,3 +4,5 @@ Thumbs.db
 .vscode/
 .idea/
 assets/logo-source.png
+.vercel
+node_modules/

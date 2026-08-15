@@ -1,8 +1,11 @@
-(() => {
+(async () => {
+  if (window.GirasoleContent) {
+    await window.GirasoleContent.loadSiteContent();
+  }
+
   const header = document.querySelector("[data-header]");
   const toggle = document.querySelector("[data-nav-toggle]");
   const mobileNav = document.querySelector("[data-mobile-nav]");
-  const slides = [...document.querySelectorAll("[data-hero-slide]")];
   const form = document.getElementById("reservation-form");
   const status = document.querySelector("[data-form-status]");
 
@@ -30,6 +33,7 @@
     });
   }
 
+  const slides = [...document.querySelectorAll("[data-hero-slide]")];
   if (slides.length > 1) {
     let index = 0;
     setInterval(() => {
@@ -58,11 +62,12 @@
   }
 
   const dateInput = form?.querySelector('input[name="date"]');
+  let todayIso = "";
   if (dateInput) {
     const today = new Date();
-    const iso = today.toISOString().slice(0, 10);
-    dateInput.min = iso;
-    if (!dateInput.value) dateInput.value = iso;
+    todayIso = today.toISOString().slice(0, 10);
+    dateInput.min = todayIso;
+    if (!dateInput.value) dateInput.value = todayIso;
   }
 
   form?.addEventListener("submit", (event) => {
@@ -90,11 +95,12 @@
     status.classList.remove("is-error");
     status.textContent = "Rezervarea a fost pregătită. Se deschide emailul tău…";
 
+    const reservationEmail = window.__RESERVATION_EMAIL__ || "hello@girasole.bucuresti";
     const subject = encodeURIComponent("Rezervare Girasole");
     const body = encodeURIComponent(summary);
-    window.location.href = `mailto:hello@girasole.bucuresti?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${reservationEmail}?subject=${subject}&body=${body}`;
 
     form.reset();
-    if (dateInput) dateInput.value = iso;
+    if (dateInput && todayIso) dateInput.value = todayIso;
   });
 })();

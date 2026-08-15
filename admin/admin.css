@@ -1,0 +1,257 @@
+:root {
+  --green: #2e471c;
+  --green-deep: #243b00;
+  --gold: #e5b73b;
+  --paper: #f7f5ef;
+  --ink: #243b00;
+  --muted: #5e6752;
+  --line: rgba(46, 71, 28, 0.14);
+  --white: #fffcf6;
+  --danger: #8a2e2e;
+  --font: "Outfit", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.5;
+}
+
+.login-screen {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.login-card {
+  width: min(420px, 100%);
+  padding: 2rem;
+  background: var(--white);
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 1rem;
+}
+
+.login-card h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--green);
+}
+
+.login-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.admin-app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.25rem 1.25rem 3rem;
+}
+
+.admin-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: 1.45rem;
+  color: var(--green);
+}
+
+.admin-header p {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.admin-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-nav button {
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--green);
+  padding: 0.5rem 0.85rem;
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.admin-nav button.is-active {
+  background: var(--green);
+  color: var(--white);
+  border-color: var(--green);
+}
+
+.admin-panel {
+  display: none;
+  background: var(--white);
+  border: 1px solid var(--line);
+  padding: 1.25rem;
+}
+
+.admin-panel.is-active {
+  display: block;
+}
+
+.admin-panel h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  color: var(--green);
+}
+
+.field-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.field-grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 640px) {
+  .field-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+label span {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--white);
+  font: inherit;
+  padding: 0.7rem 0.75rem;
+}
+
+textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.list-editor {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.list-item {
+  border: 1px solid var(--line);
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.list-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.list-item-head strong {
+  font-size: 0.88rem;
+  color: var(--green);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--green-deep);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--green);
+}
+
+.btn-danger {
+  background: transparent;
+  border-color: rgba(138, 46, 46, 0.35);
+  color: var(--danger);
+  min-height: 2rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.82rem;
+}
+
+.btn-small {
+  min-height: 2rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.save-status {
+  min-height: 1.4rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.92rem;
+  color: var(--green);
+}
+
+.save-status.is-error {
+  color: var(--danger);
+}
+
+.form-msg {
+  min-height: 1.2rem;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--danger);
+}
+
+.panel-actions {
+  margin-top: 0.75rem;
+}
