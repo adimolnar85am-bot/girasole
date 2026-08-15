@@ -7,7 +7,6 @@
     { id: "hero", label: "Hero" },
     { id: "about", label: "Despre" },
     { id: "gallery", label: "Galerie" },
-    { id: "weekly", label: "Meniul săptămânii" },
     { id: "menu", label: "Meniu" },
     { id: "reservations", label: "Rezervări" },
     { id: "contact", label: "Contact" },
@@ -139,25 +138,6 @@
         ${renderListEditor("gallery", content.gallery, [
           { label: "Imagine (cale)", name: "src" },
           { label: "Descriere", name: "alt" },
-        ])}
-      </section>
-
-      <section class="admin-panel${activeSection === "weekly" ? " is-active" : ""}" data-panel="weekly">
-        <h2>Meniul săptămânii</h2>
-        <div class="field-grid">
-          ${field("Etichetă", "weekly.eyebrow", content.weekly.eyebrow)}
-          ${field("Titlu", "weekly.title", content.weekly.title)}
-          ${field("Text", "weekly.text", content.weekly.text, "textarea", 3)}
-          ${field("Imagine (cale)", "weekly.image", content.weekly.image)}
-          ${field("Descriere imagine", "weekly.imageAlt", content.weekly.imageAlt)}
-          ${field("Legendă pe imagine", "weekly.caption", content.weekly.caption)}
-          ${field("Link Instagram", "weekly.instagramUrl", content.weekly.instagramUrl)}
-          ${field("Text link Instagram", "weekly.instagramLabel", content.weekly.instagramLabel)}
-        </div>
-        <h3 style="margin-top:1.25rem;font-size:1rem;color:var(--green)">Produse săptămâna asta</h3>
-        ${renderListEditor("weekly.items", content.weekly.items, [
-          { label: "Nume", name: "name" },
-          { label: "Descriere", name: "desc", type: "textarea", rows: 2 },
         ])}
       </section>
 

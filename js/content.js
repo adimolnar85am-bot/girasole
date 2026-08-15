@@ -24,19 +24,6 @@
     return escapeHtml(str);
   }
 
-  function renderWeeklyItems(items) {
-    const list = document.querySelector("[data-weekly-list]");
-    if (!list || !Array.isArray(items)) return;
-    list.innerHTML = items
-      .map(
-        (item) => `<li>
-        <span class="item-name">${escapeHtml(item.name)}</span>
-        <span class="item-desc">${escapeHtml(item.desc)}</span>
-      </li>`
-      )
-      .join("");
-  }
-
   function renderMenuItems(items) {
     return (items || [])
       .map(
@@ -89,16 +76,6 @@
     setAttr("[data-content='about.image']", "alt", data.about?.imageAlt);
 
     renderGallery(data.gallery);
-
-    setText("[data-content='weekly.eyebrow']", data.weekly?.eyebrow);
-    setText("[data-content='weekly.title']", data.weekly?.title);
-    setText("[data-content='weekly.text']", data.weekly?.text);
-    setText("[data-content='weekly.caption']", data.weekly?.caption);
-    setAttr("[data-content='weekly.image']", "src", data.weekly?.image);
-    setAttr("[data-content='weekly.image']", "alt", data.weekly?.imageAlt);
-    setAttr("[data-content='weekly.instagram']", "href", data.weekly?.instagramUrl);
-    setText("[data-content='weekly.instagram']", data.weekly?.instagramLabel);
-    renderWeeklyItems(data.weekly?.items);
 
     setText("[data-content='menu.eyebrow']", data.menu?.eyebrow);
     setText("[data-content='menu.title']", data.menu?.title);

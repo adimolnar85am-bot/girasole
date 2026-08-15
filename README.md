@@ -51,7 +51,7 @@ Modificările sunt salvate direct în repository (versionate în git). Nu e nevo
 ## Conținut
 
 - Hero cu logo și imagini
-- Meniul săptămânii + meniu Panini / Caffè
+- Meniu Panini / Caffè
 - Formular rezervări (email configurabil din admin)
 - Contact + hartă (Strada Austrului nr. 1)
 

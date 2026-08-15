@@ -5,7 +5,7 @@
   },
   "hero": {
     "line": "Panini artizanale și cafea, pe Strada Austrului.",
-    "ctaPrimary": "Meniul săptămânii",
+    "ctaPrimary": "Meniu",
     "ctaSecondary": "Rezervă",
     "slides": ["assets/coffee.jpg", "assets/detail.jpg"]
   },
@@ -22,22 +22,6 @@
     { "src": "assets/mural.jpg", "alt": "Detaliu din spațiul Girasole" },
     { "src": "assets/panini.jpg", "alt": "Ilustrație lemon tree Girasole" }
   ],
-  "weekly": {
-    "eyebrow": "Meniul săptămânii",
-    "title": "Ce găsești săptămâna asta",
-    "text": "Selecție scurtă, proaspătă — actualizăm lista în fiecare săptămână. Urmărește și vitrina de pe Instagram.",
-    "image": "assets/coffee.jpg",
-    "imageAlt": "Barul Girasole — meniul săptămânii",
-    "caption": "meniul săptămânii",
-    "instagramUrl": "https://www.instagram.com/girasole.bucuresti/",
-    "instagramLabel": "Vezi meniul pe Instagram",
-    "items": [
-      { "name": "Panini Prosciutto & Rucola", "desc": "Prosciutto, rucola, mozzarella, ulei de măsline" },
-      { "name": "Panini Caprese", "desc": "Roșii coapte, mozzarella, busuioc, pesto" },
-      { "name": "Panini Tonno", "desc": "Ton, ceapă roșie, lămâie, ierburi" },
-      { "name": "Iced Latte Girasole", "desc": "Espresso, lapte, gheață — rețeta săptămânii" }
-    ]
-  },
   "menu": {
     "eyebrow": "Meniu",
     "title": "Panini e Caffè",
