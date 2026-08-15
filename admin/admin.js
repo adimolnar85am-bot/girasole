@@ -1,6 +1,10 @@
 (function () {
   const TOKEN_KEY = "girasole_admin_token";
   const API = "/api/content";
+  const ASSETS_API = "/api/assets";
+
+  let assetLibrary = null;
+  let activeImageInput = null;
 
   const sections = [
     { id: "meta", label: "General" },
@@ -26,6 +30,8 @@
   const saveStatus = document.getElementById("save-status");
   const loginPassword = document.getElementById("login-password");
   const loginSubmit = loginForm?.querySelector('button[type="submit"]');
+  const mediaModal = document.getElementById("media-modal");
+  const mediaGrid = document.getElementById("media-grid");
 
   function getToken() {
     return sessionStorage.getItem(TOKEN_KEY);
@@ -73,10 +79,39 @@
   }
 
   function field(label, id, value, type = "text", rows) {
+    if (type === "image") return imageField(label, id, value);
     if (type === "textarea") {
       return `<label><span>${label}</span><textarea data-field="${id}" rows="${rows || 3}">${escapeHtml(value || "")}</textarea></label>`;
     }
     return `<label><span>${label}</span><input data-field="${id}" type="${type}" value="${escapeAttr(value || "")}" /></label>`;
+  }
+
+  function previewUrl(path) {
+    if (!path) return "";
+    const clean = path.trim().replace(/^\//, "");
+    return clean ? `/${clean}?v=${Date.now()}` : "";
+  }
+
+  function imageField(label, id, value) {
+    const path = value || "";
+    const hasImage = Boolean(path.trim());
+    const src = hasImage ? previewUrl(path) : "";
+    return `<div class="image-field" data-image-field>
+      <span class="image-field-label">${escapeHtml(label)}</span>
+      <div class="image-field-preview">
+        <img src="${escapeAttr(src)}" alt="" data-image-preview ${hasImage ? "" : "hidden"} />
+        <span class="image-field-empty" ${hasImage ? "hidden" : ""}>Nicio imagine selectată</span>
+      </div>
+      <input data-field="${id}" type="text" value="${escapeAttr(path)}" placeholder="assets/nume-imagine.jpg" />
+      <div class="image-field-actions">
+        <label class="btn btn-ghost btn-small image-upload-btn">
+          Încarcă poză
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" hidden data-image-upload />
+        </label>
+        <button type="button" class="btn btn-ghost btn-small" data-image-library>Alege din bibliotecă</button>
+      </div>
+      <p class="image-field-status" data-image-status role="status"></p>
+    </div>`;
   }
 
   function escapeHtml(str) {
@@ -123,8 +158,8 @@
           ${field("Text principal", "hero.line", content.hero.line, "textarea", 2)}
           ${field("Buton principal", "hero.ctaPrimary", content.hero.ctaPrimary)}
           ${field("Buton secundar", "hero.ctaSecondary", content.hero.ctaSecondary)}
-          ${field("Imagine slide 1", "hero.slides.0", content.hero.slides?.[0])}
-          ${field("Imagine slide 2", "hero.slides.1", content.hero.slides?.[1])}
+          ${imageField("Imagine slide 1", "hero.slides.0", content.hero.slides?.[0])}
+          ${imageField("Imagine slide 2", "hero.slides.1", content.hero.slides?.[1])}
         </div>
       </section>
 
@@ -134,7 +169,7 @@
           ${field("Etichetă", "about.eyebrow", content.about.eyebrow)}
           ${field("Titlu", "about.title", content.about.title)}
           ${field("Text", "about.text", content.about.text, "textarea", 4)}
-          ${field("Imagine (cale)", "about.image", content.about.image)}
+          ${imageField("Imagine", "about.image", content.about.image)}
           ${field("Descriere imagine", "about.imageAlt", content.about.imageAlt)}
         </div>
       </section>
@@ -142,7 +177,7 @@
       <section class="admin-panel${activeSection === "gallery" ? " is-active" : ""}" data-panel="gallery">
         <h2>Galerie foto</h2>
         ${renderListEditor("gallery", content.gallery, [
-          { label: "Imagine (cale)", name: "src" },
+          { label: "Imagine", name: "src", type: "image" },
           { label: "Descriere", name: "alt" },
         ])}
       </section>
@@ -205,6 +240,7 @@
       </section>`;
 
     bindListActions();
+    bindImageFields();
   }
 
   function renderNav() {
@@ -253,13 +289,136 @@
     });
   }
 
+  function updateImagePreview(container, path) {
+    const preview = container.querySelector("[data-image-preview]");
+    const empty = container.querySelector(".image-field-empty");
+    const clean = (path || "").trim();
+    if (!preview || !empty) return;
+    if (clean) {
+      preview.src = previewUrl(clean);
+      preview.hidden = false;
+      empty.hidden = true;
+    } else {
+      preview.hidden = true;
+      preview.removeAttribute("src");
+      empty.hidden = false;
+    }
+  }
+
+  function setImageStatus(container, message, isError) {
+    const status = container.querySelector("[data-image-status]");
+    if (!status) return;
+    status.textContent = message || "";
+    status.classList.toggle("is-error", Boolean(isError));
+  }
+
+  async function fetchAssetLibrary(force) {
+    if (assetLibrary && !force) return assetLibrary;
+    const res = await fetch(ASSETS_API, { cache: "no-store" });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Nu am putut încărca biblioteca.");
+    assetLibrary = data.files || [];
+    return assetLibrary;
+  }
+
+  async function uploadAsset(file) {
+    const maxSize = 4 * 1024 * 1024;
+    if (file.size > maxSize) throw new Error("Imaginea e prea mare (max. 4 MB).");
+
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("Nu am putut citi fișierul."));
+      reader.readAsDataURL(file);
+    });
+
+    const res = await fetch(ASSETS_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify({ filename: file.name, data: dataUrl }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Upload eșuat.");
+    assetLibrary = null;
+    return data.path;
+  }
+
+  function closeMediaModal() {
+    if (!mediaModal) return;
+    mediaModal.hidden = true;
+    activeImageInput = null;
+  }
+
+  async function openMediaModal(inputEl) {
+    if (!mediaModal || !mediaGrid) return;
+    activeImageInput = inputEl;
+    mediaModal.hidden = false;
+    mediaGrid.innerHTML = `<p class="media-modal-hint">Se încarcă…</p>`;
+    try {
+      const files = await fetchAssetLibrary(true);
+      if (!files.length) {
+        mediaGrid.innerHTML = `<p class="media-modal-hint">Nu există poze în assets/. Încarcă una mai întâi.</p>`;
+        return;
+      }
+      mediaGrid.innerHTML = files
+        .map(
+          (file) => `<button type="button" class="media-item" data-media-path="${escapeAttr(file.path)}">
+            <img src="${escapeAttr(previewUrl(file.path))}" alt="" loading="lazy" />
+            <span>${escapeHtml(file.name)}</span>
+          </button>`
+        )
+        .join("");
+      mediaGrid.querySelectorAll("[data-media-path]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (!activeImageInput) return;
+          activeImageInput.value = btn.dataset.mediaPath;
+          activeImageInput.dispatchEvent(new Event("input", { bubbles: true }));
+          closeMediaModal();
+        });
+      });
+    } catch (err) {
+      mediaGrid.innerHTML = `<p class="media-modal-hint is-error">${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  function bindImageFields() {
+    adminMain.querySelectorAll("[data-image-field]").forEach((container) => {
+      const input = container.querySelector("[data-field]");
+      const upload = container.querySelector("[data-image-upload]");
+      const libraryBtn = container.querySelector("[data-image-library]");
+      if (!input) return;
+
+      input.addEventListener("input", () => updateImagePreview(container, input.value));
+
+      libraryBtn?.addEventListener("click", () => openMediaModal(input));
+
+      upload?.addEventListener("change", async () => {
+        const file = upload.files?.[0];
+        upload.value = "";
+        if (!file) return;
+        setImageStatus(container, "Se încarcă…");
+        try {
+          const path = await uploadAsset(file);
+          input.value = path;
+          updateImagePreview(container, path);
+          setImageStatus(container, "Poză încărcată. Apasă Salvează modificările.");
+        } catch (err) {
+          setImageStatus(container, err.message, true);
+        }
+      });
+    });
+  }
+
   function bindListActions() {
     adminMain.querySelectorAll("[data-add]").forEach((btn) => {
       btn.addEventListener("click", () => {
         collectFormData();
         const key = btn.dataset.add;
         const list = getNested(content, key) || [];
-        if (key === "gallery") list.push({ src: "assets/", alt: "" });
+        if (key === "gallery") list.push({ src: "", alt: "" });
         else if (key.startsWith("menu.")) list.push({ name: "", price: "", desc: "" });
         else list.push({ name: "", desc: "" });
         setNested(content, key, list);
@@ -334,6 +493,14 @@
   logoutBtn.addEventListener("click", () => {
     setToken(null);
     location.reload();
+  });
+
+  mediaModal?.querySelectorAll("[data-media-close]").forEach((el) => {
+    el.addEventListener("click", closeMediaModal);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && mediaModal && !mediaModal.hidden) closeMediaModal();
   });
 
   if (getToken()) {

@@ -61,4 +61,4 @@ Modificările sunt salvate direct în repository (versionate în git). Nu e nevo
 - Formular rezervări (email configurabil din admin)
 - Contact + hartă (Strada Austrului nr. 1)
 
-Imaginile se referă prin cale relativă (ex. `assets/coffee.jpg`). Pentru imagini noi, încarcă fișierul în `assets/` via GitHub, apoi actualizează calea în admin.
+Imaginile se gestionează din admin: preview, upload sau alegere din biblioteca `assets/`. Upload-ul necesită `GITHUB_TOKEN` în Vercel.

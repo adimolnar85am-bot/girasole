@@ -1,10 +1,17 @@
-const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
+const {
+  readAdminConfig,
+  getGitHubConfig,
+  githubHeaders,
+  verifyPassword,
+  getSigningSecret,
+  signToken,
+  verifyToken,
+  parseBody,
+} = require("../lib/admin-auth");
 
 const CONTENT_PATH = "data/site-content.json";
-const ADMIN_CONFIG_PATH = "data/admin-config.json";
-const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 function readLocalJson(relativePath) {
   const filePath = path.join(process.cwd(), relativePath);
@@ -13,33 +20,6 @@ function readLocalJson(relativePath) {
 
 function readLocalDefault() {
   return readLocalJson(CONTENT_PATH);
-}
-
-function readLocalAdminConfig() {
-  try {
-    return readLocalJson(ADMIN_CONFIG_PATH);
-  } catch {
-    return null;
-  }
-}
-
-function getGitHubConfig() {
-  const repo = process.env.GITHUB_REPO || "adimolnar85am-bot/girasole";
-  const branch = process.env.GITHUB_BRANCH || "master";
-  const token = process.env.GITHUB_TOKEN;
-  const [owner, repoName] = repo.split("/");
-  if (!owner || !repoName) throw new Error("GITHUB_REPO_INVALID");
-  return { owner, repoName, branch, token };
-}
-
-function githubHeaders(token) {
-  const headers = {
-    Accept: "application/vnd.github+json",
-    "User-Agent": "girasole-admin",
-    "X-GitHub-Api-Version": "2022-11-28",
-  };
-  if (token) headers.Authorization = `Bearer ${token}`;
-  return headers;
 }
 
 async function readJsonFromGitHub(relativePath) {
@@ -57,12 +37,6 @@ async function readFromGitHub() {
   const data = await readJsonFromGitHub(CONTENT_PATH);
   if (!data) return null;
   return { data };
-}
-
-async function readAdminConfig() {
-  const fromGitHub = await readJsonFromGitHub(ADMIN_CONFIG_PATH);
-  if (fromGitHub) return fromGitHub;
-  return readLocalAdminConfig();
 }
 
 async function writeToGitHub(relativePath, data, message) {
@@ -98,63 +72,6 @@ async function writeToGitHub(relativePath, data, message) {
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.message || "GITHUB_WRITE_FAILED");
-  }
-}
-
-function parseBody(req) {
-  if (!req.body) return null;
-  if (typeof req.body === "string") {
-    try {
-      return JSON.parse(req.body);
-    } catch {
-      return null;
-    }
-  }
-  return req.body;
-}
-
-function hashPassword(password, salt) {
-  return crypto.scryptSync(password, salt, 64).toString("hex");
-}
-
-function verifyPassword(input, config) {
-  const password = String(input || "").trim();
-  if (!password) return false;
-
-  const envPassword = process.env.ADMIN_PASSWORD;
-  if (envPassword && password === String(envPassword).trim()) return true;
-
-  if (!config?.passwordHash || !config?.salt) return false;
-  const hash = hashPassword(password, config.salt);
-  try {
-    return crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(config.passwordHash, "hex"));
-  } catch {
-    return false;
-  }
-}
-
-function getSigningSecret(config) {
-  return process.env.ADMIN_SECRET || config?.secret || null;
-}
-
-function signToken(secret) {
-  if (!secret) return null;
-  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + TOKEN_TTL_MS })).toString("base64url");
-  const sig = crypto.createHmac("sha256", secret).update(payload).digest("base64url");
-  return `${payload}.${sig}`;
-}
-
-function verifyToken(token, secret) {
-  if (!secret || !token) return false;
-  const [payload, sig] = token.split(".");
-  if (!payload || !sig) return false;
-  const expected = crypto.createHmac("sha256", secret).update(payload).digest("base64url");
-  if (sig !== expected) return false;
-  try {
-    const { exp } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
-    return Date.now() < exp;
-  } catch {
-    return false;
   }
 }
 
