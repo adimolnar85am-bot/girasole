@@ -22,11 +22,11 @@
   "gallery": [
     {
       "src": "assets/coffee.jpg",
-      "alt": "Interior Girasole cu bar și meniu săptămânal"
+      "alt": "Interior Girasole cu bar și meniu "
     },
     {
       "src": "assets/hero.jpg",
-      "alt": "Pregătirea cafelei pe mașina espresso"
+      "alt": "Pregătirea cafelei "
     },
     {
       "src": "assets/mural.jpg",
@@ -35,6 +35,10 @@
     {
       "src": "assets/panini.jpg",
       "alt": "Ilustrație lemon tree Girasole"
+    },
+    {
+      "src": "assets/",
+      "alt": ""
     }
   ],
   "menu": {
