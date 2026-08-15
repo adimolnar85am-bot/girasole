@@ -537,93 +537,6 @@ a:hover {
   }
 }
 
-/* This week's menu */
-.weekly {
-  padding-top: clamp(3.5rem, 8vw, 5.5rem);
-}
-
-.weekly-layout {
-  max-width: 1120px;
-  margin: 0 auto;
-  display: grid;
-  gap: clamp(2rem, 5vw, 3.75rem);
-  align-items: center;
-}
-
-@media (min-width: 900px) {
-  .weekly-layout {
-    grid-template-columns: 1.05fr 0.95fr;
-  }
-}
-
-.weekly-media {
-  margin: 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.weekly-media img {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  object-position: center 40%;
-}
-
-.weekly-media figcaption {
-  position: absolute;
-  left: 1.25rem;
-  bottom: 1.25rem;
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
-  font-style: italic;
-  color: var(--white);
-  letter-spacing: 0.01em;
-  text-shadow: 0 8px 24px rgba(36, 59, 0, 0.35);
-}
-
-.weekly-list {
-  list-style: none;
-  margin: 1.75rem 0 1.5rem;
-  padding: 0;
-  display: grid;
-  gap: 1.15rem;
-}
-
-.weekly-list li {
-  padding-bottom: 1.1rem;
-  border-bottom: 1px solid var(--line);
-}
-
-.weekly-list .item-name {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 1.45rem;
-  color: var(--green);
-  line-height: 1.2;
-}
-
-.weekly-list .item-desc {
-  display: block;
-  margin-top: 0.25rem;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-.text-link {
-  display: inline-block;
-  color: var(--green);
-  font-size: 0.92rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  border-bottom: 1px solid rgba(46, 71, 28, 0.28);
-}
-
-.text-link:hover {
-  border-bottom-color: var(--gold);
-}
-
 /* Permanent menu */
 .menu {
   background:
@@ -904,6 +817,22 @@ textarea {
   text-transform: uppercase;
   font-size: 0.78rem;
   font-weight: 500;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.footer-admin {
+  opacity: 0.55;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.06em !important;
+}
+
+.footer-admin:hover {
+  opacity: 1;
 }
 
 /* Reveal on scroll */
