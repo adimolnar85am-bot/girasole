@@ -277,6 +277,9 @@
 
   async function bootAdmin() {
     await loadContent();
+    if (!content?.hero || !content?.menu) {
+      throw new Error("Conținut incomplet. Reîncarcă pagina sau contactează suportul.");
+    }
     loginScreen.hidden = true;
     adminApp.hidden = false;
     renderNav();
@@ -314,8 +317,11 @@
   });
 
   if (getToken()) {
-    bootAdmin().catch(() => {
+    bootAdmin().catch((err) => {
       setToken(null);
+      loginScreen.hidden = false;
+      adminApp.hidden = true;
+      loginMsg.textContent = err.message || "Sesiune expirată. Autentifică-te din nou.";
     });
   }
 })();

@@ -108,7 +108,7 @@ module.exports = async (req, res) => {
         error: "Admin nu este configurat. Setează ADMIN_PASSWORD și ADMIN_SECRET în Vercel.",
       });
     }
-    if (req.body.password !== password) {
+    if (String(req.body.password || "").trim() !== String(password).trim()) {
       return res.status(401).json({ error: "Parolă incorectă." });
     }
     return res.status(200).json({ token: signToken() });
