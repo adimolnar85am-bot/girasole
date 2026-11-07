@@ -169,8 +169,11 @@
           ${field("Etichetă", "about.eyebrow", content.about.eyebrow)}
           ${field("Titlu", "about.title", content.about.title)}
           ${field("Text", "about.text", content.about.text, "textarea", 4)}
-          ${imageField("Imagine", "about.image", content.about.image)}
-          ${field("Descriere imagine", "about.imageAlt", content.about.imageAlt)}
+          <p class="panel-hint">Fotografiile din sliderul sectiunii Despre. Le poti adauga, sterge sau reordona aici.</p>
+          ${renderListEditor("about.images", content.about.images || (content.about.image ? [{ src: content.about.image, alt: content.about.imageAlt || "" }] : []), [
+            { label: "Fotografie", name: "src", type: "image" },
+            { label: "Descriere foto", name: "alt" },
+          ])}
         </div>
       </section>
 
@@ -418,7 +421,7 @@
         collectFormData();
         const key = btn.dataset.add;
         const list = getNested(content, key) || [];
-        if (key === "gallery") list.push({ src: "", alt: "" });
+        if (key === "gallery" || key === "about.images") list.push({ src: "", alt: "" });
         else if (key.startsWith("menu.")) list.push({ name: "", price: "", desc: "" });
         else list.push({ name: "", desc: "" });
         setNested(content, key, list);
