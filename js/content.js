@@ -66,7 +66,6 @@
 
     setText("[data-content='hero.line']", data.hero?.line);
     setText("[data-content='hero.ctaPrimary']", data.hero?.ctaPrimary);
-    setText("[data-content='hero.ctaSecondary']", data.hero?.ctaSecondary);
     renderHeroSlides(data.hero?.slides);
 
     setText("[data-content='about.eyebrow']", data.about?.eyebrow);
@@ -85,10 +84,6 @@
     const caffeList = document.querySelector("[data-menu-caffe]");
     if (paniniList) paniniList.innerHTML = renderMenuItems(data.menu?.panini);
     if (caffeList) caffeList.innerHTML = renderMenuItems(data.menu?.caffe);
-
-    setText("[data-content='reservations.eyebrow']", data.reservations?.eyebrow);
-    setText("[data-content='reservations.title']", data.reservations?.title);
-    setText("[data-content='reservations.text']", data.reservations?.text);
 
     setText("[data-content='contact.eyebrow']", data.contact?.eyebrow);
     setText("[data-content='contact.title']", data.contact?.title);
@@ -109,7 +104,6 @@
     setText("[data-content='footer.instagram']", data.footer?.instagramLabel);
 
     window.__SITE_CONTENT__ = data;
-    window.__RESERVATION_EMAIL__ = data.reservations?.email || "hello@girasole.bucuresti";
   }
 
   async function loadSiteContent() {
