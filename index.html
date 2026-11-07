@@ -6,7 +6,7 @@
     <title>Girasole · Panini e Caffè · București</title>
     <meta
       name="description"
-      content="Girasole Panini e Caffè — panini artizanale și cafea pe Strada Austrului nr. 1, București. Rezervă o masă."
+      content="Girasole Panini e Caffè — panini artizanale și cafea pe Strada Austrului nr. 1, București."
     />
     <link rel="icon" href="assets/logo.png?v=10" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,10 +25,8 @@
       <nav class="nav" aria-label="Navigare principală">
         <a href="#despre">Despre</a>
         <a href="#meniu">Meniu</a>
-        <a href="#rezervari">Rezervări</a>
         <a href="#contact">Contact</a>
       </nav>
-      <a class="header-cta" href="#rezervari">Rezervă</a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" data-nav-toggle>
         <span class="sr-only">Meniu</span>
         <span></span><span></span>
@@ -38,7 +36,6 @@
     <div class="mobile-nav" id="mobile-nav" data-mobile-nav hidden>
       <a href="#despre">Despre</a>
       <a href="#meniu">Meniu</a>
-      <a href="#rezervari">Rezervări</a>
       <a href="#contact">Contact</a>
     </div>
 
@@ -57,7 +54,6 @@
           <p class="hero-line" data-content="hero.line">Panini artizanale și cafea, pe Strada Austrului.</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#meniu" data-content="hero.ctaPrimary">Meniu</a>
-            <a class="btn btn-ghost" href="#rezervari" data-content="hero.ctaSecondary">Rezervă</a>
           </div>
         </div>
         <a class="scroll-hint" href="#despre" aria-label="Derulează în jos">
@@ -204,65 +200,6 @@
         <p class="menu-footnote reveal" data-content="menu.footnote">
           Prețurile sunt orientative. Pentru alergii sau preferințe, întreabă-ne la bar.
         </p>
-      </section>
-
-      <section class="section reserve" id="rezervari">
-        <div class="reserve-layout">
-          <div class="reserve-intro reveal">
-            <p class="eyebrow" data-content="reservations.eyebrow">Rezervări</p>
-            <h2 data-content="reservations.title">Rezervă o masă</h2>
-            <p data-content="reservations.text">
-              Spune-ne când vii — îți confirmăm rezervarea pe email sau telefon
-              în cel mai scurt timp.
-            </p>
-          </div>
-
-          <form class="reserve-form reveal" id="reservation-form" novalidate>
-            <div class="field-row">
-              <label>
-                <span>Nume</span>
-                <input type="text" name="name" autocomplete="name" required placeholder="Numele tău" />
-              </label>
-              <label>
-                <span>Telefon</span>
-                <input type="tel" name="phone" autocomplete="tel" required placeholder="+40…" />
-              </label>
-            </div>
-            <div class="field-row">
-              <label>
-                <span>Email</span>
-                <input type="email" name="email" autocomplete="email" required placeholder="email@exemplu.ro" />
-              </label>
-              <label>
-                <span>Persoane</span>
-                <select name="guests" required>
-                  <option value="1">1</option>
-                  <option value="2" selected>2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6+</option>
-                </select>
-              </label>
-            </div>
-            <div class="field-row">
-              <label>
-                <span>Data</span>
-                <input type="date" name="date" required />
-              </label>
-              <label>
-                <span>Ora</span>
-                <input type="time" name="time" required value="12:00" />
-              </label>
-            </div>
-            <label class="field-full">
-              <span>Mesaj (opțional)</span>
-              <textarea name="message" rows="3" placeholder="Preferințe, ocazie specială…"></textarea>
-            </label>
-            <button class="btn btn-primary" type="submit">Trimite rezervarea</button>
-            <p class="form-note" data-form-status role="status" aria-live="polite"></p>
-          </form>
-        </div>
       </section>
 
       <section class="section contact" id="contact">
