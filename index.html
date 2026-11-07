@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css?v=16" />
+    <link rel="stylesheet" href="css/styles.css?v=17" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -73,11 +73,20 @@
             </p>
           </div>
           <figure class="about-figure reveal">
-            <img
-              data-content="about.image"
-              src="assets/detail.jpg"
-              alt="Panini proaspete cu rucola și prosciutto"
-            />
+            <div
+              class="about-slider"
+              data-about-slider
+              role="group"
+              aria-label="Fotografii Girasole"
+            >
+              <img
+                class="about-slide is-active"
+                data-about-slide
+                src="assets/detail.jpg"
+                alt="Panini proaspete cu rucola și prosciutto"
+                loading="lazy"
+              />
+            </div>
           </figure>
         </div>
       </section>
@@ -257,7 +266,7 @@
       >
     </footer>
 
-    <script src="js/content.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/content.js?v=17"></script>
+    <script src="js/main.js?v=17"></script>
   </body>
 </html>
