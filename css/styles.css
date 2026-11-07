@@ -473,17 +473,60 @@ a:hover {
   overflow: hidden;
 }
 
-.about-figure img {
+.about-slider {
+  position: relative;
   width: 100%;
   aspect-ratio: 4 / 5;
-  object-fit: cover;
-  filter: saturate(0.95) contrast(1.02);
-  transform: scale(1.02);
-  transition: transform 1.2s var(--ease);
+  overflow: hidden;
+  background: var(--paper-2);
 }
 
-.about-figure:hover img {
-  transform: scale(1.06);
+.about-slider .about-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.95) contrast(1.02);
+  opacity: 0;
+  transform: scale(1.025);
+  transition: opacity 1.1s var(--ease), transform 1.6s var(--ease);
+}
+
+.about-slider .about-slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.about-slider-dots {
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+.about-slider-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  padding: 0;
+  border: 1px solid rgba(255, 252, 246, 0.9);
+  border-radius: 50%;
+  background: rgba(255, 252, 246, 0.35);
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.about-slider-dot.is-active {
+  background: var(--white);
+  transform: scale(1.15);
+}
+
+.about-slider-dot:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
 }
 
 /* Gallery */
@@ -741,6 +784,8 @@ a:hover {
   }
 
   .hero-img,
+  .about-slider .about-slide,
+  .about-slider-dot,
   .reveal,
   .hero-content,
   .hero-logo,
@@ -862,8 +907,11 @@ a:hover {
     gap: 1.75rem;
   }
 
-  .about-figure img {
+  .about-slider {
     aspect-ratio: 5 / 4;
+  }
+
+  .about-slider .about-slide {
     object-position: center 45%;
   }
 
