@@ -41,6 +41,35 @@
     }, 6500);
   }
 
+  const aboutSlider = document.querySelector("[data-about-slider]");
+  if (aboutSlider) {
+    const aboutSlides = [...aboutSlider.querySelectorAll("[data-about-slide]")];
+    const aboutDots = [...aboutSlider.querySelectorAll("[data-about-slide-to]")];
+
+    if (aboutSlides.length > 1) {
+      let aboutIndex = 0;
+      const showAboutSlide = (nextIndex) => {
+        aboutIndex = (nextIndex + aboutSlides.length) % aboutSlides.length;
+        aboutSlides.forEach((slide, index) => {
+          slide.classList.toggle("is-active", index === aboutIndex);
+        });
+        aboutDots.forEach((dot, index) => {
+          const active = index === aboutIndex;
+          dot.classList.toggle("is-active", active);
+          dot.setAttribute("aria-current", String(active));
+        });
+      };
+
+      aboutDots.forEach((dot, index) => {
+        dot.addEventListener("click", () => showAboutSlide(index));
+      });
+
+      if (!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+        window.setInterval(() => showAboutSlide(aboutIndex + 1), 6000);
+      }
+    }
+  }
+
   const revealEls = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver(
