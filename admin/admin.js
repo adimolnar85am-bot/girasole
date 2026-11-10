@@ -459,6 +459,7 @@
           const path = await uploadAsset(file);
           input.value = path;
           updateImagePreview(container, path);
+          setDirty(true);
           setImageStatus(container, "Poză încărcată. Apasă Salvează modificările.");
         } catch (err) {
           setImageStatus(container, err.message, true);
