@@ -10,13 +10,15 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/admin/admin.css?v=3" />
+    <link rel="stylesheet" href="/admin/admin.css?v=4" />
   </head>
   <body>
     <div id="login-screen" class="login-screen">
       <form id="login-form" class="login-card">
-        <h1>Girasole Admin</h1>
-        <p>Autentifică-te pentru a edita conținutul site-ului.</p>
+        <img class="login-logo" src="/assets/logo.png" alt="Girasole" />
+        <p class="admin-kicker">Panou de administrare</p>
+        <h1>Girasole</h1>
+        <p>Gestionează conținutul site-ului, meniul și fotografiile.</p>
         <label>
           <span>Parolă</span>
           <input type="password" id="login-password" autocomplete="current-password" required />
@@ -28,9 +30,13 @@
 
     <div id="admin-app" class="admin-app" hidden>
       <header class="admin-header">
-        <div>
-          <h1>Girasole · Admin</h1>
-          <p>Editează textele, meniurile și datele de contact.</p>
+        <div class="admin-heading">
+          <img class="admin-logo" src="/assets/logo.png" alt="" />
+          <div>
+            <p class="admin-kicker">Panou de administrare</p>
+            <h1>Girasole</h1>
+            <p>Conținut, imagini și informații pentru site.</p>
+          </div>
         </div>
         <div class="admin-header-actions">
           <a class="btn btn-ghost" href="/" target="_blank" rel="noopener">Vezi site-ul</a>
@@ -58,6 +64,6 @@
       </div>
     </div>
 
-    <script src="/admin/admin.js?v=6"></script>
+    <script src="/admin/admin.js?v=7"></script>
   </body>
 </html>
