@@ -141,7 +141,7 @@
         .map(
           (item, i) => `<div class="list-item" data-index="${i}">
           <div class="list-item-head">
-            <strong>Element ${i + 1}</strong>
+            <strong>${key.startsWith("menu.") ? `Poziția ${i + 1} · ${escapeHtml(item.name || `Produs ${i + 1}`)}` : `Element ${i + 1}`}</strong>
             ${listItemActions(key, i, list.length)}
           </div>
           ${fields
@@ -242,13 +242,29 @@
           ${field("Text intro", "menu.text", content.menu.text, "textarea", 2)}
           ${field("Notă subsol", "menu.footnote", content.menu.footnote, "textarea", 2)}
         </div>
-        <h3 style="margin-top:1.25rem;font-size:1rem;color:var(--green)">Panini</h3>
+        <div class="menu-import-panel">
+          <div class="menu-import-copy">
+            <h3>Importă sau exportă meniul</h3>
+            <p>Încarcă un fișier Excel sau JSON pentru a actualiza produsele și ordinea lor. Importul înlocuiește categoriile prezente în fișier.</p>
+            <p class="menu-import-format">Excel: foi numite <strong>Panini</strong> și <strong>Caffe</strong>, coloane <strong>Pozitie</strong>, <strong>Produs</strong>, <strong>Pret</strong>, <strong>Descriere</strong>. Pentru o singură foaie, include și coloana <strong>Categorie</strong>.</p>
+          </div>
+          <div class="menu-import-actions">
+            <button type="button" class="btn btn-ghost" data-menu-template>Descarcă Excel</button>
+            <button type="button" class="btn btn-ghost" data-menu-export>Exportă JSON</button>
+            <label class="btn btn-primary menu-import-file-label">
+              Importă fișier
+              <input type="file" accept=".xlsx,.xls,.csv,.json,application/json" hidden data-menu-import-file />
+            </label>
+          </div>
+          <p class="menu-import-status" data-menu-import-status role="status">Descarcă Excelul actual, editează produsele și reîncarcă-l.</p>
+        </div>
+        <h3 class="menu-category-title">Panini</h3>
         ${renderListEditor("menu.panini", content.menu.panini, [
           { label: "Nume", name: "name" },
           { label: "Preț", name: "price" },
           { label: "Descriere", name: "desc", type: "textarea", rows: 2 },
         ])}
-        <h3 style="margin-top:1.25rem;font-size:1rem;color:var(--green)">Caffè</h3>
+        <h3 class="menu-category-title">Caffè</h3>
         ${renderListEditor("menu.caffe", content.menu.caffe, [
           { label: "Nume", name: "name" },
           { label: "Preț", name: "price" },
@@ -283,6 +299,310 @@
 
     bindListActions();
     bindImageFields();
+    bindMenuImportActions();
+  }
+
+  function menuExportData() {
+    collectFormData();
+    const toRows = (items) =>
+      (items || [])
+        .filter((item) => item && String(item.name || "").trim())
+        .map((item, index) => ({
+          position: index + 1,
+          name: String(item.name || "").trim(),
+          price: String(item.price ?? "").trim(),
+          desc: String(item.desc ?? "").trim(),
+        }));
+
+    return {
+      panini: toRows(content.menu.panini),
+      caffe: toRows(content.menu.caffe),
+    };
+  }
+
+  function downloadFile(filename, contents, mimeType) {
+    const blob = new Blob([contents], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function downloadMenuJson() {
+    const data = menuExportData();
+    downloadFile(
+      "girasole-meniu.json",
+      JSON.stringify(data, null, 2),
+      "application/json;charset=utf-8"
+    );
+  }
+
+  let xlsxLibraryPromise = null;
+
+  function loadXlsxLibrary() {
+    if (window.XLSX) return Promise.resolve(window.XLSX);
+    if (xlsxLibraryPromise) return xlsxLibraryPromise;
+
+    xlsxLibraryPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+      script.async = true;
+      script.onload = () => {
+        if (window.XLSX) resolve(window.XLSX);
+        else reject(new Error("Nu am putut inițializa biblioteca Excel."));
+      };
+      script.onerror = () => {
+        xlsxLibraryPromise = null;
+        reject(new Error("Biblioteca Excel nu s-a putut încărca. Încearcă importul JSON."));
+      };
+      document.head.appendChild(script);
+    });
+
+    return xlsxLibraryPromise;
+  }
+
+  async function downloadMenuExcel() {
+    const XLSX = await loadXlsxLibrary();
+    const data = menuExportData();
+    const workbook = XLSX.utils.book_new();
+
+    const addSheet = (name, rows) => {
+      const sheet = XLSX.utils.json_to_sheet(
+        rows.map((item) => ({
+          Pozitie: item.position,
+          Produs: item.name,
+          Pret: item.price,
+          Descriere: item.desc,
+        })),
+        { header: ["Pozitie", "Produs", "Pret", "Descriere"] }
+      );
+      sheet["!cols"] = [{ wch: 10 }, { wch: 28 }, { wch: 14 }, { wch: 58 }];
+      XLSX.utils.book_append_sheet(workbook, sheet, name);
+    };
+
+    addSheet("Panini", data.panini);
+    addSheet("Caffe", data.caffe);
+    XLSX.writeFile(workbook, "girasole-meniu-editabil.xlsx");
+  }
+
+  function normalizeColumn(value) {
+    return String(value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+  }
+
+  function getRowValue(row, aliases) {
+    for (const [key, value] of Object.entries(row || {})) {
+      if (aliases.includes(normalizeColumn(key))) return value;
+    }
+    return "";
+  }
+
+  function normalizeMenuRows(rows, label) {
+    if (!Array.isArray(rows)) throw new Error(`Lista ${label} trebuie să fie un tabel de produse.`);
+
+    const normalized = [];
+    rows.forEach((row, index) => {
+      const name = getRowValue(row, ["produs", "nume", "name", "product", "title"]);
+      const price = getRowValue(row, ["pret", "price", "cost"]);
+      const desc = getRowValue(row, ["descriere", "desc", "description", "ingrediente", "ingredients"]);
+      const position = getRowValue(row, ["pozitie", "position", "ordine", "order", "sortorder"]);
+      const hasAnyValue = [name, price, desc, position].some((value) => String(value ?? "").trim() !== "");
+      if (!hasAnyValue) return;
+      if (!String(name ?? "").trim()) {
+        throw new Error(`Produs fără nume în categoria ${label}, rândul ${index + 2}.`);
+      }
+
+      const hasPosition = String(position ?? "").trim() !== "" && Number.isFinite(Number(position));
+      normalized.push({
+        item: {
+          name: String(name).trim(),
+          price: String(price ?? "").trim(),
+          desc: String(desc ?? "").trim(),
+        },
+        position: hasPosition ? Number(position) : index + 1,
+        sourceIndex: index,
+      });
+    });
+
+    normalized.sort((a, b) => a.position - b.position || a.sourceIndex - b.sourceIndex);
+    return normalized.map((entry) => entry.item);
+  }
+
+  function normalizeJsonMenu(parsed) {
+    const source = parsed?.menu && typeof parsed.menu === "object" ? parsed.menu : parsed;
+    const result = {};
+
+    ["panini", "caffe"].forEach((category) => {
+      if (Object.prototype.hasOwnProperty.call(source || {}, category)) {
+        result[category] = normalizeMenuRows(source[category], category === "panini" ? "Panini" : "Caffe");
+      }
+    });
+
+    const genericItems = source?.items || source?.products;
+    if (!Object.keys(result).length && Array.isArray(genericItems)) {
+      result.panini = [];
+      result.caffe = [];
+      genericItems.forEach((item, index) => {
+        const category = normalizeColumn(getRowValue({ category: item.category || item.categorie || item.type || "" }, ["category"]));
+        if (["panini", "panino", "sandwich", "sandwiches"].includes(category)) {
+          result.panini.push({ ...item, position: item.position ?? item.pozitie ?? index + 1 });
+        } else if (["caffe", "cafe", "coffee", "bauturi", "drink", "drinks"].includes(category)) {
+          result.caffe.push({ ...item, position: item.position ?? item.pozitie ?? index + 1 });
+        } else {
+          throw new Error(`Categorie necunoscută pentru produsul ${item.name || item.nume || index + 1}.`);
+        }
+      });
+      result.panini = normalizeMenuRows(result.panini, "Panini");
+      result.caffe = normalizeMenuRows(result.caffe, "Caffe");
+    }
+
+    if (!Object.keys(result).length) {
+      throw new Error("JSON invalid. Folosește cheile «panini» și «caffe», fiecare cu nume, pret și descriere.");
+    }
+    return result;
+  }
+
+  function parseWorkbookMenu(workbook, XLSX) {
+    const result = {};
+    const names = workbook.SheetNames || [];
+    const normalizedNames = names.map((name) => ({ name, key: normalizeColumn(name) }));
+    const paniniSheet = normalizedNames.find((sheet) => sheet.key.includes("panini"));
+    const caffeSheet = normalizedNames.find((sheet) =>
+      ["caffe", "cafe", "coffee", "bauturi", "drinks"].some((key) => sheet.key.includes(key))
+    );
+
+    if (paniniSheet) {
+      result.panini = normalizeMenuRows(
+        XLSX.utils.sheet_to_json(workbook.Sheets[paniniSheet.name], { defval: "", raw: false }),
+        "Panini"
+      );
+    }
+    if (caffeSheet) {
+      result.caffe = normalizeMenuRows(
+        XLSX.utils.sheet_to_json(workbook.Sheets[caffeSheet.name], { defval: "", raw: false }),
+        "Caffe"
+      );
+    }
+    if (Object.keys(result).length) return result;
+
+    const genericSheet = normalizedNames.find((sheet) =>
+      ["meniu", "menu", "produse", "products"].includes(sheet.key)
+    ) || normalizedNames[0];
+    if (!genericSheet) throw new Error("Fișierul Excel nu conține foi cu produse.");
+
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[genericSheet.name], { defval: "", raw: false });
+    const grouped = { panini: [], caffe: [] };
+    rows.forEach((row, index) => {
+      const category = normalizeColumn(getRowValue(row, ["categorie", "category", "sectiune", "section", "tip", "type", "grup"]));
+      if (!category) {
+        const hasContent = Object.values(row).some((value) => String(value ?? "").trim() !== "");
+        if (hasContent) throw new Error("Pentru o singură foaie Excel, adaugă o coloană «Categorie» cu valorile Panini sau Caffe.");
+        return;
+      }
+      const item = { ...row, position: getRowValue(row, ["pozitie", "position", "ordine", "order"]) || index + 1 };
+      if (["panini", "panino", "sandwich", "sandwiches"].includes(category)) grouped.panini.push(item);
+      else if (["caffe", "cafe", "coffee", "bauturi", "drink", "drinks"].includes(category)) grouped.caffe.push(item);
+      else throw new Error(`Categorie necunoscută la rândul ${index + 2}: ${category}.`);
+    });
+
+    if (!grouped.panini.length && !grouped.caffe.length) {
+      throw new Error("Nu am găsit produse. Verifică foile Panini/Caffe sau coloana Categorie.");
+    }
+    if (rows.length) {
+      result.panini = normalizeMenuRows(grouped.panini, "Panini");
+      result.caffe = normalizeMenuRows(grouped.caffe, "Caffe");
+    }
+    return result;
+  }
+
+  async function parseMenuFile(file) {
+    const extension = file.name.split(".").pop().toLowerCase();
+    if (extension === "json") {
+      let parsed;
+      try {
+        parsed = JSON.parse(await file.text());
+      } catch {
+        throw new Error("Nu am putut citi JSON-ul. Verifică virgulele și acoladele.");
+      }
+      return normalizeJsonMenu(parsed);
+    }
+
+    if (!["xlsx", "xls", "csv"].includes(extension)) {
+      throw new Error("Format neacceptat. Încarcă un fișier .xlsx, .xls, .csv sau .json.");
+    }
+
+    const XLSX = await loadXlsxLibrary();
+    const workbook = XLSX.read(await file.arrayBuffer(), { type: "array" });
+    return parseWorkbookMenu(workbook, XLSX);
+  }
+
+  function bindMenuImportActions() {
+    const fileInput = adminMain.querySelector("[data-menu-import-file]");
+    const importStatus = adminMain.querySelector("[data-menu-import-status]");
+    const templateButton = adminMain.querySelector("[data-menu-template]");
+    const exportButton = adminMain.querySelector("[data-menu-export]");
+
+    exportButton?.addEventListener("click", () => {
+      try {
+        downloadMenuJson();
+        if (importStatus) importStatus.textContent = "Meniul curent a fost exportat în JSON.";
+      } catch (err) {
+        if (importStatus) importStatus.textContent = err.message;
+      }
+    });
+
+    templateButton?.addEventListener("click", async () => {
+      if (importStatus) importStatus.textContent = "Se pregătește fișierul Excel…";
+      try {
+        await downloadMenuExcel();
+        if (importStatus) importStatus.textContent = "Excelul editabil a fost descărcat.";
+      } catch (err) {
+        if (importStatus) {
+          importStatus.textContent = err.message;
+          importStatus.classList.add("is-error");
+        }
+      }
+    });
+
+    fileInput?.addEventListener("change", async () => {
+      const file = fileInput.files?.[0];
+      fileInput.value = "";
+      if (!file) return;
+      if (importStatus) {
+        importStatus.textContent = `Se verifică ${file.name}…`;
+        importStatus.classList.remove("is-error");
+      }
+
+      try {
+        const imported = await parseMenuFile(file);
+        const categories = Object.keys(imported);
+        if (!categories.length) throw new Error("Fișierul nu conține categorii de meniu.");
+        collectFormData();
+        categories.forEach((category) => {
+          content.menu[category] = imported[category];
+        });
+        setDirty(true);
+        renderPanels();
+        const summary = categories.map((category) =>
+          category === "panini" ? "Panini" : "Caffe"
+        ).join(" și ");
+        const count = categories.reduce((total, category) => total + imported[category].length, 0);
+        const status = adminMain.querySelector("[data-menu-import-status]");
+        if (status) status.textContent = `Import reușit: ${count} produse în ${summary}. Verifică lista și apasă „Salvează modificările”.`;
+      } catch (err) {
+        if (importStatus) {
+          importStatus.textContent = err.message || "Importul a eșuat.";
+          importStatus.classList.add("is-error");
+        }
+      }
+    });
   }
 
   function renderNav() {
