@@ -804,3 +804,70 @@ textarea {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+.menu-import-panel {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0 1.75rem;
+  padding: 1.15rem;
+  border: 1px solid #dfe5d9;
+  border-radius: 6px;
+  background: #f5f7f1;
+}
+
+.menu-import-copy h3 {
+  margin: 0;
+  color: var(--green);
+  font-size: 1.12rem;
+}
+
+.menu-import-copy p {
+  max-width: 78ch;
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.menu-import-copy .menu-import-format {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #e0e7da;
+  font-size: 0.8rem;
+}
+
+.menu-import-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.menu-import-file-label {
+  cursor: pointer;
+}
+
+.menu-import-status {
+  min-height: 1.2rem;
+  margin: 0;
+  color: var(--green);
+  font-size: 0.82rem;
+}
+
+.menu-import-status.is-error {
+  color: var(--danger);
+}
+
+.menu-category-title {
+  margin: 1.5rem 0 0.5rem;
+  color: var(--green);
+  font-family: Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.list-item-head > strong {
+  min-width: 0;
+  color: var(--green);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
