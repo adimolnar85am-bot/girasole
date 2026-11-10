@@ -1,0 +1,18 @@
+{
+  "panini": [
+    {
+      "position": 1,
+      "name": "Nume produs",
+      "price": "00 lei",
+      "desc": "Descriere produs"
+    }
+  ],
+  "caffe": [
+    {
+      "position": 1,
+      "name": "Nume produs",
+      "price": "00 lei",
+      "desc": "Descriere produs"
+    }
+  ]
+}
