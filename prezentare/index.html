@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Linkuri utile si fisiere pentru proiectul Girasole Panini e Caffe." />
+  <title>Girasole | Pachet de prezentare</title>
+  <link rel="icon" href="/assets/logo.png?v=10" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #2e471c;
+      --green-deep: #243b00;
+      --green-soft: #e9eee3;
+      --gold: #e5b73b;
+      --paper: #f3f1e9;
+      --ink: #26351f;
+      --muted: #788070;
+      --line: #e5e4db;
+      --white: #fffefa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 8% 0%, rgba(229,183,59,.12), transparent 62%),
+        radial-gradient(700px 420px at 100% 20%, rgba(46,71,28,.07), transparent 62%),
+        var(--paper);
+      font-family: "Outfit", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .page {
+      width: min(1080px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 42px 0 64px;
+    }
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 26px;
+      border-bottom: 1px solid rgba(46,71,28,.14);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--green);
+      text-decoration: none;
+    }
+    .brand img { width: 44px; height: 52px; object-fit: contain; }
+    .brand-name { font-family: "Cormorant Garamond", Georgia, serif; font-size: 27px; line-height: 1; }
+    .brand-sub { display: block; margin-top: 5px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+    .top-link {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(46,71,28,.32);
+      padding-bottom: 3px;
+    }
+    .intro { max-width: 720px; padding: 58px 0 34px; }
+    .eyebrow {
+      margin: 0 0 13px;
+      color: #879079;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      color: var(--green);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(42px, 7vw, 68px);
+      font-weight: 500;
+      line-height: .98;
+      letter-spacing: -.025em;
+    }
+    .intro-copy {
+      max-width: 570px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .section-label {
+      margin: 30px 0 13px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .card {
+      min-height: 215px;
+      display: flex;
+      flex-direction: column;
+      padding: 25px;
+      background: rgba(255,254,250,.9);
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 38px rgba(36,59,0,.045);
+    }
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .number { color: #a4aa9b; font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: .08em; }
+    .tag {
+      padding: 5px 8px;
+      color: var(--green);
+      background: var(--green-soft);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .tag.gold { background: #f7f0dc; color: #80621c; }
+    h2 {
+      margin: 0;
+      color: var(--green);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 31px;
+      font-weight: 500;
+      line-height: 1.05;
+    }
+    .card p {
+      margin: 10px 0 22px;
+      max-width: 42ch;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .card-action {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      gap: 10px;
+      margin-top: auto;
+      padding: 11px 15px;
+      color: white;
+      background: var(--green);
+      border: 1px solid var(--green);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .2s ease, transform .2s ease;
+    }
+    .card-action:hover { background: var(--green-deep); transform: translateY(-1px); }
+    .card-action.secondary { color: var(--green); background: transparent; }
+    .card-action.secondary:hover { background: var(--green-soft); }
+    .arrow { font-size: 16px; line-height: 10px; }
+    .tools {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .tool-card {
+      padding: 22px 24px;
+      background: rgba(255,254,250,.62);
+      border: 1px solid var(--line);
+    }
+    .tool-card h3 {
+      margin: 0;
+      color: var(--green);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 25px;
+      font-weight: 500;
+    }
+    .tool-card p { margin: 8px 0 17px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .tool-card .card-action { background: transparent; color: var(--green); }
+    .tool-card .card-action:hover { background: var(--green-soft); }
+    .note {
+      display: flex;
+      gap: 14px;
+      margin-top: 25px;
+      padding: 17px 19px;
+      border-left: 2px solid var(--gold);
+      background: rgba(255,254,250,.55);
+    }
+    .note-mark { color: #98751f; font-family: Georgia, serif; font-size: 23px; line-height: 1; }
+    .note p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 55px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(46,71,28,.14);
+      color: #8a9182;
+      font-size: 10px;
+      letter-spacing: .06em;
+    }
+    #download-status { min-height: 18px; margin: 10px 0 0; color: var(--green); font-size: 11px; }
+    #download-status.error { color: #9b3d35; }
+    @media (max-width: 680px) {
+      .page { width: min(100% - 28px, 520px); padding-top: 22px; }
+      .topline { align-items: flex-start; }
+      .top-link { max-width: 118px; text-align: right; font-size: 11px; }
+      .intro { padding: 45px 0 24px; }
+      .grid, .tools { grid-template-columns: 1fr; }
+      .card { min-height: 195px; padding: 21px; }
+      .tool-card { padding: 20px; }
+      .footer { flex-direction: column; gap: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topline">
+      <a class="brand" href="/" aria-label="Girasole, site principal">
+        <img src="/assets/logo.png?v=10" alt="" />
+        <span>
+          <span class="brand-name">Girasole</span>
+          <span class="brand-sub">Panini e Caffè · București</span>
+        </span>
+      </a>
+      <a class="top-link" href="/" target="_blank" rel="noopener noreferrer">Deschide site-ul public ↗</a>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">Girasole · Project links</p>
+      <h1>Pachet de<br />prezentare.</h1>
+      <p class="intro-copy">Aici gasesti linkurile principale ale proiectului si fisierele de lucru pentru actualizarea meniului. Pagina poate fi distribuita direct persoanelor implicate.</p>
+    </section>
+
+    <p class="section-label">Linkuri principale</p>
+    <section class="grid" aria-label="Linkuri principale">
+      <article class="card">
+        <div class="card-head"><span class="number">01 / WEBSITE</span><span class="tag">Public</span></div>
+        <h2>Site public</h2>
+        <p>Versiunea live Girasole Panini e Caffè. Include prezentarea, meniul, galeria si informatiile de contact.</p>
+        <a class="card-action" href="/" target="_blank" rel="noopener noreferrer">Vezi site-ul <span class="arrow">↗</span></a>
+      </article>
+
+      <article class="card">
+        <div class="card-head"><span class="number">02 / ADMIN</span><span class="tag gold">Acces protejat</span></div>
+        <h2>Panou de administrare</h2>
+        <p>Editeaza continutul, imaginile si produsele din meniu. Accesul necesita parola, transmisa separat persoanelor autorizate.</p>
+        <a class="card-action secondary" href="/admin/" target="_blank" rel="noopener noreferrer">Deschide Admin <span class="arrow">↗</span></a>
+      </article>
+    </section>
+
+    <p class="section-label">Fisiere pentru meniu</p>
+    <section class="tools" aria-label="Fisiere pentru meniu">
+      <article class="tool-card">
+        <h3>Model Excel</h3>
+        <p>Fisier editabil cu doua foi, Panini si Caffe. Completeaza coloanele Pozitie, Produs, Pret si Descriere, apoi importa fisierul in Admin, sectiunea Meniu.</p>
+        <button class="card-action" id="excel-download" type="button">Descarca Excel <span class="arrow">↓</span></button>
+        <p id="download-status" role="status" aria-live="polite"></p>
+      </article>
+      <article class="tool-card">
+        <h3>Model JSON</h3>
+        <p>Structura echivalenta pentru actualizarea meniului printr-un fisier JSON. Pastreaza cheile panini si caffe si ordinea produselor.</p>
+        <a class="card-action" href="/prezentare/meniu-template.json" download>Descarca JSON <span class="arrow">↓</span></a>
+      </article>
+    </section>
+
+    <aside class="note">
+      <span class="note-mark">i</span>
+      <p>Pagina este publica si poate fi distribuita prin link. Panoul Admin solicita parola. Nu include parola pe aceasta pagina si nu o trimite impreuna cu linkul public. Importul meniului se face din Admin, sectiunea Meniu, iar modificarile devin publice dupa salvare.</p>
+    </aside>
+
+    <footer class="footer">
+      <span>GIRASOLE PANINI E CAFFÈ</span>
+      <span>Project access · Linkuri si fisiere utile</span>
+    </footer>
+  </main>
+
+  <script>
+    const button = document.getElementById("excel-download");
+    const status = document.getElementById("download-status");
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      status.classList.remove("error");
+      status.textContent = "Pregatesc fisierul Excel...";
+      try {
+        if (!window.XLSX) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = "https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";
+            script.onload = resolve;
+            script.onerror = () => reject(new Error("Biblioteca Excel nu s-a putut incarca. Incearca mai tarziu."));
+            document.head.appendChild(script);
+          });
+        }
+        const workbook = window.XLSX.utils.book_new();
+        const headers = [["Pozitie", "Produs", "Pret", "Descriere"]];
+        ["Panini", "Caffe"].forEach((name) => {
+          const sheet = window.XLSX.utils.aoa_to_sheet(headers);
+          sheet["!cols"] = [{ wch: 10 }, { wch: 28 }, { wch: 14 }, { wch: 58 }];
+          window.XLSX.utils.book_append_sheet(workbook, sheet, name);
+        });
+        window.XLSX.writeFile(workbook, "girasole-meniu-template.xlsx");
+        status.textContent = "Fisierul Excel a fost generat.";
+      } catch (error) {
+        status.classList.add("error");
+        status.textContent = error.message || "Nu am putut genera fisierul Excel.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
