@@ -349,7 +349,7 @@
 
     xlsxLibraryPromise = new Promise((resolve, reject) => {
       const script = document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+      script.src = "https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";
       script.async = true;
       script.onload = () => {
         if (window.XLSX) resolve(window.XLSX);
