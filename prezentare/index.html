@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="description" content="Linkuri utile si fisiere pentru proiectul Girasole Panini e Caffe." />
-  <title>Girasole | Pachet de prezentare</title>
+  <meta name="description" content="Ghid de prezentare si utilizare pentru site-ul Girasole Panini e Caffe." />
+  <title>Girasole | Ghid de prezentare si utilizare</title>
   <link rel="icon" href="/assets/logo.png?v=10" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,8 +21,11 @@
       --muted: #788070;
       --line: #e5e4db;
       --white: #fffefa;
+      --warning: #8b6220;
+      --warning-bg: #f8f1df;
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -32,195 +35,175 @@
         radial-gradient(700px 420px at 100% 20%, rgba(46,71,28,.07), transparent 62%),
         var(--paper);
       font-family: "Outfit", system-ui, sans-serif;
-      line-height: 1.55;
+      line-height: 1.6;
     }
     a { color: inherit; }
-    .page {
-      width: min(1080px, calc(100% - 40px));
-      margin: 0 auto;
-      padding: 42px 0 64px;
-    }
+    button { font: inherit; }
+    .page { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 34px 0 64px; }
     .topline {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding-bottom: 26px;
-      border-bottom: 1px solid rgba(46,71,28,.14);
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      padding-bottom: 23px; border-bottom: 1px solid rgba(46,71,28,.14);
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      color: var(--green);
-      text-decoration: none;
-    }
+    .brand { display: flex; align-items: center; gap: 14px; color: var(--green); text-decoration: none; }
     .brand img { width: 44px; height: 52px; object-fit: contain; }
     .brand-name { font-family: "Cormorant Garamond", Georgia, serif; font-size: 27px; line-height: 1; }
     .brand-sub { display: block; margin-top: 5px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
-    .top-link {
-      color: var(--green);
-      font-size: 13px;
-      font-weight: 500;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(46,71,28,.32);
-      padding-bottom: 3px;
-    }
-    .intro { max-width: 720px; padding: 58px 0 34px; }
-    .eyebrow {
-      margin: 0 0 13px;
-      color: #879079;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .19em;
-      text-transform: uppercase;
+    .top-link { color: var(--green); font-size: 12px; font-weight: 500; text-decoration: none; border-bottom: 1px solid rgba(46,71,28,.32); padding-bottom: 3px; }
+    .intro { max-width: 800px; padding: 55px 0 36px; }
+    .eyebrow, .section-label {
+      margin: 0 0 13px; color: #879079; font-size: 10px; font-weight: 600;
+      letter-spacing: .19em; text-transform: uppercase;
     }
     h1 {
-      margin: 0;
-      color: var(--green);
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: clamp(42px, 7vw, 68px);
-      font-weight: 500;
-      line-height: .98;
-      letter-spacing: -.025em;
+      margin: 0; color: var(--green); font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(43px, 7vw, 72px); font-weight: 500; line-height: .96; letter-spacing: -.025em;
     }
-    .intro-copy {
-      max-width: 570px;
-      margin: 18px 0 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.8;
+    .intro-copy { max-width: 690px; margin: 18px 0 0; color: var(--muted); font-size: 15px; line-height: 1.85; }
+    .intro-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 23px; }
+    .action {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 42px; padding: 10px 15px; border: 1px solid var(--green);
+      background: var(--green); color: white; font-size: 12px; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: background .2s ease, transform .2s ease;
     }
-    .section-label {
-      margin: 30px 0 13px;
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-    .card {
-      min-height: 215px;
-      display: flex;
-      flex-direction: column;
-      padding: 25px;
-      background: rgba(255,254,250,.9);
-      border: 1px solid var(--line);
-      box-shadow: 0 14px 38px rgba(36,59,0,.045);
-    }
-    .card-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    .number { color: #a4aa9b; font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: .08em; }
-    .tag {
-      padding: 5px 8px;
-      color: var(--green);
-      background: var(--green-soft);
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-    }
-    .tag.gold { background: #f7f0dc; color: #80621c; }
+    .action:hover { background: var(--green-deep); transform: translateY(-1px); }
+    .action.secondary { color: var(--green); background: transparent; }
+    .action.secondary:hover { background: var(--green-soft); }
+    .section { margin-top: 44px; scroll-margin-top: 24px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 16px; }
+    .section-heading .section-label { margin: 0 0 7px; }
     h2 {
-      margin: 0;
-      color: var(--green);
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 31px;
-      font-weight: 500;
-      line-height: 1.05;
+      margin: 0; color: var(--green); font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(30px, 4vw, 39px); font-weight: 500; line-height: 1.05;
     }
-    .card p {
-      margin: 10px 0 22px;
-      max-width: 42ch;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
+    .section-intro { max-width: 590px; margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+    .site-overview {
+      display: grid; grid-template-columns: 1.05fr .95fr; gap: 16px;
     }
-    .card-action {
-      display: inline-flex;
-      align-items: center;
-      align-self: flex-start;
-      gap: 10px;
-      margin-top: auto;
-      padding: 11px 15px;
-      color: white;
-      background: var(--green);
-      border: 1px solid var(--green);
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background .2s ease, transform .2s ease;
+    .overview-card {
+      padding: 23px 25px; background: rgba(255,254,250,.88);
+      border: 1px solid var(--line); box-shadow: 0 14px 38px rgba(36,59,0,.04);
     }
-    .card-action:hover { background: var(--green-deep); transform: translateY(-1px); }
-    .card-action.secondary { color: var(--green); background: transparent; }
-    .card-action.secondary:hover { background: var(--green-soft); }
-    .arrow { font-size: 16px; line-height: 10px; }
-    .tools {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 16px;
+    .overview-card h3, .guide-card h3, .tool-card h3 {
+      margin: 0; color: var(--green); font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 26px; font-weight: 500; line-height: 1.1;
     }
-    .tool-card {
-      padding: 22px 24px;
-      background: rgba(255,254,250,.62);
-      border: 1px solid var(--line);
+    .overview-card p { margin: 9px 0 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
+    .overview-list { display: grid; gap: 12px; margin-top: 4px; }
+    .overview-item { display: grid; grid-template-columns: 29px minmax(0,1fr); gap: 11px; align-items: start; }
+    .overview-number {
+      width: 27px; height: 27px; display: grid; place-items: center; border-radius: 50%;
+      background: var(--green-soft); color: var(--green); font-size: 10px; font-weight: 600;
     }
-    .tool-card h3 {
-      margin: 0;
-      color: var(--green);
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 25px;
-      font-weight: 500;
+    .overview-item strong { display: block; color: var(--ink); font-size: 12px; font-weight: 600; }
+    .overview-item span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .admin-start {
+      display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 18px;
+      margin-top: 16px; padding: 22px 24px; background: var(--green); color: white;
     }
-    .tool-card p { margin: 8px 0 17px; color: var(--muted); font-size: 12px; line-height: 1.7; }
-    .tool-card .card-action { background: transparent; color: var(--green); }
-    .tool-card .card-action:hover { background: var(--green-soft); }
-    .note {
-      display: flex;
-      gap: 14px;
-      margin-top: 25px;
-      padding: 17px 19px;
-      border-left: 2px solid var(--gold);
-      background: rgba(255,254,250,.55);
+    .admin-start .eyebrow { margin-bottom: 6px; color: #d2d9c9; }
+    .admin-start h3 { margin: 0; font-family: "Cormorant Garamond", Georgia, serif; font-size: 27px; font-weight: 500; }
+    .admin-start p { max-width: 660px; margin: 6px 0 0; color: rgba(255,255,255,.76); font-size: 12px; line-height: 1.7; }
+    .admin-start .action { color: var(--green); background: var(--white); border-color: var(--white); white-space: nowrap; }
+    .admin-start .action:hover { background: var(--green-soft); }
+    .guide-nav {
+      display: flex; flex-wrap: wrap; gap: 7px; margin: 18px 0 16px;
     }
-    .note-mark { color: #98751f; font-family: Georgia, serif; font-size: 23px; line-height: 1; }
-    .note p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .guide-nav a {
+      padding: 7px 10px; border: 1px solid var(--line); background: rgba(255,254,250,.72);
+      color: var(--green); font-size: 10px; font-weight: 500; text-decoration: none;
+    }
+    .guide-nav a:hover { background: var(--green-soft); }
+    .guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+    .guide-card {
+      min-width: 0; padding: 22px 23px; background: rgba(255,254,250,.9);
+      border: 1px solid var(--line); box-shadow: 0 12px 32px rgba(36,59,0,.035);
+      scroll-margin-top: 20px;
+    }
+    .guide-head { display: flex; align-items: flex-start; gap: 13px; margin-bottom: 11px; }
+    .guide-num {
+      flex: 0 0 auto; color: #a4aa9b; font-size: 11px; font-variant-numeric: tabular-nums;
+      letter-spacing: .1em; padding-top: 5px;
+    }
+    .guide-card h3 { font-size: 28px; }
+    .guide-subtitle { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+    .guide-card > p { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.75; }
+    .steps { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; counter-reset: guide-step; }
+    .steps li {
+      position: relative; padding: 9px 11px 9px 36px; border-top: 1px solid #ecece5;
+      color: #606b59; font-size: 11px; line-height: 1.65; counter-increment: guide-step;
+    }
+    .steps li::before {
+      content: counter(guide-step, decimal-leading-zero); position: absolute; left: 2px; top: 10px;
+      color: #9aa28f; font-size: 9px; font-weight: 600; letter-spacing: .04em;
+    }
+    .tip {
+      margin-top: 13px; padding: 11px 13px; background: var(--green-soft);
+      color: #59694c; font-size: 10px; line-height: 1.7;
+    }
+    .tip strong { color: var(--green); }
+    .warning {
+      margin-top: 13px; padding: 12px 13px; background: var(--warning-bg);
+      color: var(--warning); font-size: 10px; line-height: 1.7;
+    }
+    .menu-import { margin-top: 16px; padding: 23px 24px; background: #f7f6f0; border: 1px solid var(--line); }
+    .menu-import h3 { margin: 0; color: var(--green); font-family: "Cormorant Garamond", Georgia, serif; font-size: 28px; font-weight: 500; }
+    .menu-import > p { max-width: 800px; margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
+    .file-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; margin-top: 17px; }
+    .tool-card { padding: 18px; background: var(--white); border: 1px solid var(--line); }
+    .tool-card h3 { font-size: 24px; }
+    .tool-card p { min-height: 56px; margin: 8px 0 14px; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .tool-card .action { min-height: 37px; padding: 8px 11px; font-size: 10px; }
+    .inline-code {
+      display: inline-block; padding: 1px 5px; background: #eeeee6; color: #506045;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em;
+    }
+    .warning-panel {
+      display: grid; grid-template-columns: 24px minmax(0,1fr); gap: 12px;
+      margin-top: 14px; padding: 14px 16px; background: var(--warning-bg); color: var(--warning);
+    }
+    .warning-panel strong { display: block; margin-bottom: 3px; font-size: 11px; }
+    .warning-panel p { margin: 0; font-size: 10px; line-height: 1.7; }
+    .warning-icon { font-family: Georgia, serif; font-size: 20px; line-height: 1.1; }
+    .workflow {
+      display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-top: 16px;
+    }
+    .workflow-card { padding: 17px; border: 1px solid var(--line); background: rgba(255,254,250,.65); }
+    .workflow-card strong { display: block; color: var(--green); font-size: 11px; }
+    .workflow-card p { margin: 5px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .security-note {
+      display: flex; gap: 13px; margin-top: 28px; padding: 17px 19px;
+      border-left: 2px solid var(--gold); background: rgba(255,254,250,.62);
+    }
+    .security-note .mark { color: #98751f; font-family: Georgia, serif; font-size: 22px; line-height: 1; }
+    .security-note p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.75; }
     .footer {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      margin-top: 55px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(46,71,28,.14);
-      color: #8a9182;
-      font-size: 10px;
-      letter-spacing: .06em;
+      display: flex; justify-content: space-between; gap: 18px; margin-top: 52px;
+      padding-top: 18px; border-top: 1px solid rgba(46,71,28,.14);
+      color: #8a9182; font-size: 10px; letter-spacing: .06em;
     }
-    #download-status { min-height: 18px; margin: 10px 0 0; color: var(--green); font-size: 11px; }
+    #download-status { min-height: 18px; margin: 9px 0 0; color: var(--green); font-size: 10px; }
     #download-status.error { color: #9b3d35; }
-    @media (max-width: 680px) {
-      .page { width: min(100% - 28px, 520px); padding-top: 22px; }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 28px, 600px); padding-top: 22px; }
+      .intro { padding: 42px 0 25px; }
+      .site-overview, .guide-grid { grid-template-columns: 1fr; }
+      .workflow { grid-template-columns: 1fr; }
+      .admin-start { grid-template-columns: 1fr; }
+      .admin-start .action { justify-self: start; }
+      .section-heading { display: block; }
+    }
+    @media (max-width: 520px) {
       .topline { align-items: flex-start; }
-      .top-link { max-width: 118px; text-align: right; font-size: 11px; }
-      .intro { padding: 45px 0 24px; }
-      .grid, .tools { grid-template-columns: 1fr; }
-      .card { min-height: 195px; padding: 21px; }
-      .tool-card { padding: 20px; }
+      .top-link { max-width: 118px; text-align: right; font-size: 10px; }
+      .brand img { width: 38px; height: 46px; }
+      .brand-name { font-size: 24px; }
+      .file-grid { grid-template-columns: 1fr; }
+      .guide-card, .overview-card, .menu-import { padding: 18px; }
       .footer { flex-direction: column; gap: 6px; }
     }
     @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
       *, *::before, *::after { transition-duration: .01ms !important; }
     }
   </style>
@@ -239,51 +222,212 @@
     </header>
 
     <section class="intro">
-      <p class="eyebrow">Girasole · Project links</p>
-      <h1>Pachet de<br />prezentare.</h1>
-      <p class="intro-copy">Aici gasesti linkurile principale ale proiectului si fisierele de lucru pentru actualizarea meniului. Pagina poate fi distribuita direct persoanelor implicate.</p>
+      <p class="eyebrow">Girasole · Ghid de prezentare</p>
+      <h1>Ce vezi.<br />Cum folosesti.</h1>
+      <p class="intro-copy">Acest pachet explica structura site-ului Girasole si modul in care poti actualiza continutul. Poti consulta site-ul public, poti intra in panoul de administrare si poti folosi fisierele de lucru pentru meniu. Ghidul de mai jos descrie pasii pentru fiecare sectiune din Admin.</p>
+      <div class="intro-actions">
+        <a class="action" href="/" target="_blank" rel="noopener noreferrer">Vezi site-ul public <span aria-hidden="true">↗</span></a>
+        <a class="action secondary" href="/admin/" target="_blank" rel="noopener noreferrer">Deschide Admin <span aria-hidden="true">↗</span></a>
+      </div>
     </section>
 
-    <p class="section-label">Linkuri principale</p>
-    <section class="grid" aria-label="Linkuri principale">
-      <article class="card">
-        <div class="card-head"><span class="number">01 / WEBSITE</span><span class="tag">Public</span></div>
-        <h2>Site public</h2>
-        <p>Versiunea live Girasole Panini e Caffè. Include prezentarea, meniul, galeria si informatiile de contact.</p>
-        <a class="card-action" href="/" target="_blank" rel="noopener noreferrer">Vezi site-ul <span class="arrow">↗</span></a>
-      </article>
-
-      <article class="card">
-        <div class="card-head"><span class="number">02 / ADMIN</span><span class="tag gold">Acces protejat</span></div>
-        <h2>Panou de administrare</h2>
-        <p>Editeaza continutul, imaginile si produsele din meniu. Accesul necesita parola, transmisa separat persoanelor autorizate.</p>
-        <a class="card-action secondary" href="/admin/" target="_blank" rel="noopener noreferrer">Deschide Admin <span class="arrow">↗</span></a>
-      </article>
+    <section class="section" id="site">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">01 / Site public</p>
+          <h2>Ce ar trebui sa vezi pe site</h2>
+          <p class="section-intro">Site-ul este prezentarea publica a locatiei. Parcurge-l de sus in jos pentru a verifica mesajul, fotografiile, meniul si informatiile utile pentru vizitatori.</p>
+        </div>
+      </div>
+      <div class="site-overview">
+        <article class="overview-card">
+          <h3>Experienta vizitatorului</h3>
+          <p>Pagina incepe cu identitatea Girasole si un mesaj scurt. Apoi prezinta spatiul, produsele si datele de contact, intr-un format adaptat telefonului si desktopului.</p>
+          <div class="overview-list">
+            <div class="overview-item"><span class="overview-number">01</span><div><strong>Cover si navigatie</strong><span>Logo, fotografie de deschidere, mesajul principal si acces rapid la meniu.</span></div></div>
+            <div class="overview-item"><span class="overview-number">02</span><div><strong>Despre</strong><span>Text de prezentare si fotografii care se pot schimba automat.</span></div></div>
+            <div class="overview-item"><span class="overview-number">03</span><div><strong>Galerie foto</strong><span>Imagini cu atmosfera, produsele si detaliile locatiei.</span></div></div>
+            <div class="overview-item"><span class="overview-number">04</span><div><strong>Meniu</strong><span>Produsele sunt grupate in Panini si Caffè, cu pret si descriere.</span></div></div>
+            <div class="overview-item"><span class="overview-number">05</span><div><strong>Contact si locatie</strong><span>Adresa, program, Instagram si harta cu locatia Girasole.</span></div></div>
+          </div>
+        </article>
+        <article class="overview-card">
+          <h3>Ce merita verificat</h3>
+          <p>Inainte de a distribui site-ul, verifica informatiile care se pot schimba in timp.</p>
+          <div class="overview-list">
+            <div class="overview-item"><span class="overview-number">A</span><div><strong>Fotografiile</strong><span>Sa fie actuale, clare si reprezentative pentru locatie si produse.</span></div></div>
+            <div class="overview-item"><span class="overview-number">B</span><div><strong>Meniul si preturile</strong><span>Sa corespunda produselor disponibile si preturilor valabile.</span></div></div>
+            <div class="overview-item"><span class="overview-number">C</span><div><strong>Programul si adresa</strong><span>Sa fie corecte. Linkul de navigatie deschide traseul spre Strada Austrului nr. 1.</span></div></div>
+            <div class="overview-item"><span class="overview-number">D</span><div><strong>Telefon si mobil</strong><span>Deschide site-ul pe telefon si testeaza meniul si linkurile.</span></div></div>
+          </div>
+        </article>
+      </div>
     </section>
 
-    <p class="section-label">Fisiere pentru meniu</p>
-    <section class="tools" aria-label="Fisiere pentru meniu">
-      <article class="tool-card">
-        <h3>Model Excel</h3>
-        <p>Fisier editabil cu doua foi, Panini si Caffe. Completeaza coloanele Pozitie, Produs, Pret si Descriere, apoi importa fisierul in Admin, sectiunea Meniu.</p>
-        <button class="card-action" id="excel-download" type="button">Descarca Excel <span class="arrow">↓</span></button>
-        <p id="download-status" role="status" aria-live="polite"></p>
-      </article>
-      <article class="tool-card">
-        <h3>Model JSON</h3>
-        <p>Structura echivalenta pentru actualizarea meniului printr-un fisier JSON. Pastreaza cheile panini si caffe si ordinea produselor.</p>
-        <a class="card-action" href="/prezentare/meniu-template.json" download>Descarca JSON <span class="arrow">↓</span></a>
-      </article>
+    <section class="section" id="admin">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">02 / Panou de administrare</p>
+          <h2>Cum actualizezi site-ul</h2>
+          <p class="section-intro">Admin este zona in care editezi textele, fotografiile, meniul si datele de contact. Modificarile nu se salveaza automat. Le verifici si apoi apesi butonul de salvare.</p>
+        </div>
+      </div>
+      <div class="admin-start">
+        <div>
+          <p class="eyebrow">Acces protejat</p>
+          <h3>Panou de administrare Girasole</h3>
+          <p>Ai nevoie de parola transmisa separat de persoana care administreaza proiectul. Dupa autentificare vei vedea meniul lateral cu cele sapte sectiuni explicate mai jos.</p>
+        </div>
+        <a class="action" href="/admin/" target="_blank" rel="noopener noreferrer">Intra in Admin <span aria-hidden="true">↗</span></a>
+      </div>
+      <nav class="guide-nav" aria-label="Navigare in ghid">
+        <a href="#general">General</a>
+        <a href="#cover">Cover</a>
+        <a href="#despre">Despre</a>
+        <a href="#galerie">Galerie foto</a>
+        <a href="#meniu">Meniu</a>
+        <a href="#contact">Contact</a>
+        <a href="#footer">Footer</a>
+      </nav>
+
+      <div class="guide-grid">
+        <article class="guide-card" id="general">
+          <div class="guide-head"><span class="guide-num">01</span><div><h3>General</h3><p class="guide-subtitle">Titlu si descriere SEO</p></div></div>
+          <p>Aceasta zona controleaza titlul paginii si descrierea folosita de motoarele de cautare sau in unele previzualizari de link. Nu modifica textele vizibile din sectiunile site-ului.</p>
+          <ol class="steps">
+            <li>Deschide sectiunea <strong>General</strong> din meniul Admin.</li>
+            <li>Completeaza titlul paginii cu numele locatiei si tipul activitatii.</li>
+            <li>Scrie o descriere scurta si clara, care sa includa Girasole, panini, cafea si Bucuresti.</li>
+            <li>Verifica textul si apasa <strong>Salveaza modificarile</strong>.</li>
+          </ol>
+          <div class="tip"><strong>Recomandare:</strong> pastreaza titlul concis si descrierea naturala. Evita sa repeti aceleasi cuvinte doar pentru SEO.</div>
+        </article>
+
+        <article class="guide-card" id="cover">
+          <div class="guide-head"><span class="guide-num">02</span><div><h3>Cover</h3><p class="guide-subtitle">Prima zona pe care o vede vizitatorul</p></div></div>
+          <p>Aici schimbi mesajul principal, eticheta butonului catre meniu si fotografiile care ruleaza in partea de sus a site-ului.</p>
+          <ol class="steps">
+            <li>Deschide <strong>Cover</strong> si editeaza textul principal si textul butonului.</li>
+            <li>Pentru o fotografie noua, apasa <strong>Adauga fotografie</strong>.</li>
+            <li>Incarca o imagine de pe calculator sau alege una din biblioteca foto.</li>
+            <li>Foloseste sagetile sus/jos pentru ordinea imaginilor. Sterge fotografiile pe care nu le mai folosesti.</li>
+            <li>Apasa <strong>Salveaza modificarile</strong> si verifica prima zona a site-ului.</li>
+          </ol>
+          <div class="tip"><strong>Recomandare:</strong> alege fotografii de calitate, cu subiect clar si suficient spatiu pentru text. Prima fotografie stabileste impresia initiala.</div>
+        </article>
+
+        <article class="guide-card" id="despre">
+          <div class="guide-head"><span class="guide-num">03</span><div><h3>Despre</h3><p class="guide-subtitle">Povestea si prezentarea locatiei</p></div></div>
+          <p>Sectiunea contine o eticheta scurta, un titlu, un text de prezentare si un slider foto. Fotografiile se pot schimba automat atunci cand exista mai multe.</p>
+          <ol class="steps">
+            <li>Editeaza eticheta, titlul si textul. Pastreaza textul usor de citit si concentrat pe experienta Girasole.</li>
+            <li>In lista fotografiilor, apasa <strong>Adauga element</strong> pentru o imagine noua.</li>
+            <li>Incarca fotografia sau selecteaz-o din biblioteca, apoi completeaza descrierea foto.</li>
+            <li>Reordoneaza imaginile cu sagetile sau sterge-le pe cele vechi.</li>
+            <li>Salveaza si verifica sliderul pe site.</li>
+          </ol>
+          <div class="tip"><strong>Recomandare:</strong> foloseste imagini coerente ca lumina si stil. Descrierea foto ajuta si la accesibilitate.</div>
+        </article>
+
+        <article class="guide-card" id="galerie">
+          <div class="guide-head"><span class="guide-num">04</span><div><h3>Galerie foto</h3><p class="guide-subtitle">Imaginile de atmosfera</p></div></div>
+          <p>Galeria prezinta imagini cu spatiul, cafeaua, panini si detaliile vizuale ale locatiei. Ordinea din Admin este ordinea folosita in galerie.</p>
+          <ol class="steps">
+            <li>Deschide <strong>Galerie foto</strong>.</li>
+            <li>Adauga un element nou pentru fiecare fotografie.</li>
+            <li>Alege imaginea din calculator sau din biblioteca foto.</li>
+            <li>Completeaza descrierea si foloseste sagetile pentru a schimba ordinea.</li>
+            <li>Sterge imaginile pe care nu vrei sa le mai afisezi si salveaza.</li>
+          </ol>
+          <div class="tip"><strong>Recomandare:</strong> alterneaza cadre de ansamblu cu detalii de produs. Evita fotografiile foarte asemanatoare una dupa alta.</div>
+        </article>
+
+        <article class="guide-card" id="meniu">
+          <div class="guide-head"><span class="guide-num">05</span><div><h3>Meniu</h3><p class="guide-subtitle">Produse, preturi si descrieri</p></div></div>
+          <p>Aici actualizezi textele introductive, nota de subsol si produsele din cele doua categorii: Panini si Caffè. Poti lucra direct in lista sau printr-un fisier Excel, CSV ori JSON.</p>
+          <ol class="steps">
+            <li>Deschide <strong>Meniu</strong>. Editeaza titlul si textul introductiv daca este nevoie.</li>
+            <li>Pentru o modificare rapida, schimba numele, pretul sau descrierea produsului direct in lista.</li>
+            <li>Foloseste <strong>Adauga element</strong> pentru un produs nou, sagetile pentru ordine si <strong>Sterge</strong> pentru eliminare.</li>
+            <li>Pentru editare in Excel, apasa <strong>Descarca Excel</strong> in Admin. Acest fisier contine meniul actual, nu un model gol.</li>
+            <li>Editeaza fisierul, apoi revino in Admin si apasa <strong>Importa fisier</strong>. Selecteaza Excel, CSV sau JSON.</li>
+            <li>Verifica produsele si ordinea importata. La final apasa <strong>Salveaza modificarile</strong>.</li>
+          </ol>
+          <div class="tip"><strong>Ordinea produselor:</strong> in Excel, coloana <span class="inline-code">Pozitie</span> stabileste ordinea. 1 apare primul, 2 al doilea si asa mai departe. In editor poti folosi sagetile sus/jos.</div>
+          <div class="warning"><strong>Atentie:</strong> un fisier Excel gol sau un JSON lasat cu valorile exemplu nu trebuie importat ca atare. Completeaza produsele reale inainte de import. Importul inlocuieste categoria prezenta in fisier.</div>
+        </article>
+
+        <article class="guide-card" id="contact">
+          <div class="guide-head"><span class="guide-num">06</span><div><h3>Contact</h3><p class="guide-subtitle">Adresa, program, Instagram si harta</p></div></div>
+          <p>Aceasta sectiune afiseaza informatiile practice de care are nevoie un vizitator ca sa gaseasca locatia si sa verifice programul.</p>
+          <ol class="steps">
+            <li>Verifica numele locatiei, adresa si orasul.</li>
+            <li>Actualizeaza programul si nota despre eventualele modificari ale acestuia.</li>
+            <li>Completeaza handle-ul si linkul corect de Instagram.</li>
+            <li>Verifica adresa din campul pentru harta. Foloseste adresa completa, nu doar numele strazii.</li>
+            <li>Salveaza si testeaza harta si linkul Instagram de pe site.</li>
+          </ol>
+          <div class="tip"><strong>Important:</strong> informatiile trebuie sa fie exacte. Inainte de publicare, verifica adresa si programul cu persoana responsabila de locatie.</div>
+        </article>
+
+        <article class="guide-card" id="footer">
+          <div class="guide-head"><span class="guide-num">07</span><div><h3>Footer</h3><p class="guide-subtitle">Zona de inchidere a paginii</p></div></div>
+          <p>Footer-ul contine textul de identificare al locatiei si linkul catre Instagram, afisate la baza site-ului.</p>
+          <ol class="steps">
+            <li>Deschide sectiunea <strong>Footer</strong>.</li>
+            <li>Actualizeaza textul de identificare daca se schimba denumirea sau mesajul.</li>
+            <li>Verifica adresa web Instagram si eticheta linkului.</li>
+            <li>Salveaza si apasa linkul din partea de jos a site-ului pentru verificare.</li>
+          </ol>
+          <div class="tip"><strong>Recomandare:</strong> pastreaza footer-ul simplu. Verifica atent URL-ul Instagram, astfel incat sa duca la profilul oficial.</div>
+        </article>
+      </div>
     </section>
 
-    <aside class="note">
-      <span class="note-mark">i</span>
-      <p>Pagina este publica si poate fi distribuita prin link. Panoul Admin solicita parola. Nu include parola pe aceasta pagina si nu o trimite impreuna cu linkul public. Importul meniului se face din Admin, sectiunea Meniu, iar modificarile devin publice dupa salvare.</p>
+    <section class="section" id="fisiere">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">03 / Fisiere de lucru</p>
+          <h2>Lucreaza cu meniul in Excel sau JSON</h2>
+          <p class="section-intro">Poti descarca un model pentru a construi un meniu nou. Pentru modificarea meniului deja publicat, foloseste exportul Excel sau JSON din sectiunea Meniu a Admin-ului, ca sa pornesti de la produsele existente.</p>
+        </div>
+      </div>
+      <div class="menu-import">
+        <h3>Modele pentru import</h3>
+        <p>Admin accepta fisiere <span class="inline-code">.xlsx</span>, <span class="inline-code">.xls</span>, <span class="inline-code">.csv</span> si <span class="inline-code">.json</span>. Pentru Excel, formatul recomandat are doua foi, Panini si Caffe. Fiecare foaie foloseste coloanele Pozitie, Produs, Pret si Descriere.</p>
+        <div class="file-grid">
+          <article class="tool-card">
+            <h3>Model Excel gol</h3>
+            <p>Doua foi goale, Panini si Caffe, cu antetele corecte. Completeaza randuri cu produse reale inainte sa il importi.</p>
+            <button class="action secondary" id="excel-download" type="button">Descarca model Excel <span aria-hidden="true">↓</span></button>
+            <p id="download-status" role="status" aria-live="polite"></p>
+          </article>
+          <article class="tool-card">
+            <h3>Model JSON</h3>
+            <p>Exemplu de structura cu listele panini si caffe. Inlocuieste valorile demonstrative cu produsele reale inainte de import.</p>
+            <a class="action secondary" href="/prezentare/meniu-template.json" download>Descarca model JSON <span aria-hidden="true">↓</span></a>
+          </article>
+        </div>
+        <div class="warning-panel">
+          <span class="warning-icon" aria-hidden="true">!</span>
+          <div><strong>Nu importa sabloanele necompletate.</strong><p>Un import inlocuieste produsele din categoria inclusa in fisier. Daca vrei sa modifici meniul existent, exporta mai intai datele din Admin, editeaza copia si apoi importa fisierul. Daca vrei sa actualizezi doar Panini, include doar categoria Panini. Categoria care lipseste din fisier ramane neschimbata.</p></div>
+        </div>
+        <div class="workflow">
+          <div class="workflow-card"><strong>1. Descarca</strong><p>In Admin, deschide Meniu si exporta meniul actual in Excel sau JSON.</p></div>
+          <div class="workflow-card"><strong>2. Editeaza</strong><p>Pastreaza numele foilor si antetele. Completeaza fiecare produs si pozitia lui.</p></div>
+          <div class="workflow-card"><strong>3. Importa si salveaza</strong><p>Incarca fisierul, verifica lista rezultata si apasa Salveaza modificarile.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="security-note">
+      <span class="mark" aria-hidden="true">i</span>
+      <p><strong>Acces si publicare.</strong> Linkul acestei pagini si site-ul public pot fi distribuite liber. Admin-ul este protejat prin parola, care trebuie transmisa separat doar persoanelor autorizate. Dupa ce apesi <strong>Salveaza modificarile</strong>, continutul este trimis spre site-ul public. Verifica rezultatul pe site, inclusiv pe telefon, inainte sa inchei sesiunea.</p>
     </aside>
 
     <footer class="footer">
       <span>GIRASOLE PANINI E CAFFÈ</span>
-      <span>Project access · Linkuri si fisiere utile</span>
+      <span>Ghid de prezentare · Linkuri si instructiuni</span>
     </footer>
   </main>
 
@@ -313,7 +457,7 @@
           window.XLSX.utils.book_append_sheet(workbook, sheet, name);
         });
         window.XLSX.writeFile(workbook, "girasole-meniu-template.xlsx");
-        status.textContent = "Fisierul Excel a fost generat.";
+        status.textContent = "Modelul Excel a fost generat. Completeaza-l inainte de import.";
       } catch (error) {
         status.classList.add("error");
         status.textContent = error.message || "Nu am putut genera fisierul Excel.";
