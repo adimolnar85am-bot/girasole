@@ -409,7 +409,7 @@
 
     const normalized = [];
     rows.forEach((row, index) => {
-      const name = getRowValue(row, ["produs", "nume", "name", "product", "title"]);
+      const name = getRowValue(row, ["produs", "nume", "name", "product", "title", "denumire", "denumireprodus"]);
       const price = getRowValue(row, ["pret", "price", "cost"]);
       const desc = getRowValue(row, ["descriere", "desc", "description", "ingrediente", "ingredients"]);
       const position = getRowValue(row, ["pozitie", "position", "ordine", "order", "sortorder"]);
@@ -453,7 +453,7 @@
         const category = normalizeColumn(getRowValue({ category: item.category || item.categorie || item.type || "" }, ["category"]));
         if (["panini", "panino", "sandwich", "sandwiches"].includes(category)) {
           result.panini.push({ ...item, position: item.position ?? item.pozitie ?? index + 1 });
-        } else if (["caffe", "cafe", "coffee", "bauturi", "drink", "drinks"].includes(category)) {
+        } else if (["caffe", "cafe", "cafea", "coffee", "bauturi", "drink", "drinks"].includes(category)) {
           result.caffe.push({ ...item, position: item.position ?? item.pozitie ?? index + 1 });
         } else {
           throw new Error(`Categorie necunoscută pentru produsul ${item.name || item.nume || index + 1}.`);
@@ -475,7 +475,7 @@
     const normalizedNames = names.map((name) => ({ name, key: normalizeColumn(name) }));
     const paniniSheet = normalizedNames.find((sheet) => sheet.key.includes("panini"));
     const caffeSheet = normalizedNames.find((sheet) =>
-      ["caffe", "cafe", "coffee", "bauturi", "drinks"].some((key) => sheet.key.includes(key))
+      ["caffe", "cafe", "cafea", "coffee", "bauturi", "drinks"].some((key) => sheet.key.includes(key))
     );
 
     if (paniniSheet) {
@@ -508,7 +508,7 @@
       }
       const item = { ...row, position: getRowValue(row, ["pozitie", "position", "ordine", "order"]) || index + 1 };
       if (["panini", "panino", "sandwich", "sandwiches"].includes(category)) grouped.panini.push(item);
-      else if (["caffe", "cafe", "coffee", "bauturi", "drink", "drinks"].includes(category)) grouped.caffe.push(item);
+      else if (["caffe", "cafe", "cafea", "coffee", "bauturi", "drink", "drinks"].includes(category)) grouped.caffe.push(item);
       else throw new Error(`Categorie necunoscută la rândul ${index + 2}: ${category}.`);
     });
 
