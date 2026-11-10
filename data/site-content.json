@@ -17,7 +17,13 @@
     "title": "panini & caffe",
     "text": "La Girasole pregătim panini cu pâine crocantă și cafea testată până la ultimul detaliu ",
     "image": "assets/girasole-33.jpg",
-    "imageAlt": "Panini proaspete "
+    "imageAlt": "Panini proaspete ",
+    "images": [
+      {
+        "src": "assets/girasole-33.jpg",
+        "alt": "Panini proaspete "
+      }
+    ]
   },
   "gallery": [
     {

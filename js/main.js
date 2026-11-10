@@ -6,8 +6,6 @@
   const header = document.querySelector("[data-header]");
   const toggle = document.querySelector("[data-nav-toggle]");
   const mobileNav = document.querySelector("[data-mobile-nav]");
-  const form = document.getElementById("reservation-form");
-  const status = document.querySelector("[data-form-status]");
 
   const onScroll = () => {
     if (!header) return;
@@ -43,6 +41,35 @@
     }, 6500);
   }
 
+  const aboutSlider = document.querySelector("[data-about-slider]");
+  if (aboutSlider) {
+    const aboutSlides = [...aboutSlider.querySelectorAll("[data-about-slide]")];
+    const aboutDots = [...aboutSlider.querySelectorAll("[data-about-slide-to]")];
+
+    if (aboutSlides.length > 1) {
+      let aboutIndex = 0;
+      const showAboutSlide = (nextIndex) => {
+        aboutIndex = (nextIndex + aboutSlides.length) % aboutSlides.length;
+        aboutSlides.forEach((slide, index) => {
+          slide.classList.toggle("is-active", index === aboutIndex);
+        });
+        aboutDots.forEach((dot, index) => {
+          const active = index === aboutIndex;
+          dot.classList.toggle("is-active", active);
+          dot.setAttribute("aria-current", String(active));
+        });
+      };
+
+      aboutDots.forEach((dot, index) => {
+        dot.addEventListener("click", () => showAboutSlide(index));
+      });
+
+      if (!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+        window.setInterval(() => showAboutSlide(aboutIndex + 1), 6000);
+      }
+    }
+  }
+
   const revealEls = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver(
@@ -61,46 +88,4 @@
     revealEls.forEach((el) => el.classList.add("is-visible"));
   }
 
-  const dateInput = form?.querySelector('input[name="date"]');
-  let todayIso = "";
-  if (dateInput) {
-    const today = new Date();
-    todayIso = today.toISOString().slice(0, 10);
-    dateInput.min = todayIso;
-    if (!dateInput.value) dateInput.value = todayIso;
-  }
-
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!form.checkValidity()) {
-      status.textContent = "Completează toate câmpurile obligatorii.";
-      status.classList.add("is-error");
-      form.reportValidity();
-      return;
-    }
-
-    const data = new FormData(form);
-    const summary = [
-      `Nume: ${data.get("name")}`,
-      `Telefon: ${data.get("phone")}`,
-      `Email: ${data.get("email")}`,
-      `Persoane: ${data.get("guests")}`,
-      `Data: ${data.get("date")}`,
-      `Ora: ${data.get("time")}`,
-      data.get("message") ? `Mesaj: ${data.get("message")}` : null,
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-    status.classList.remove("is-error");
-    status.textContent = "Rezervarea a fost pregătită. Se deschide emailul tău…";
-
-    const reservationEmail = window.__RESERVATION_EMAIL__ || "hello@girasole.bucuresti";
-    const subject = encodeURIComponent("Rezervare Girasole");
-    const body = encodeURIComponent(summary);
-    window.location.href = `mailto:${reservationEmail}?subject=${subject}&body=${body}`;
-
-    form.reset();
-    if (dateInput && todayIso) dateInput.value = todayIso;
-  });
 })();

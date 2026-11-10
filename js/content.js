@@ -58,6 +58,51 @@
         .join("") + '<div class="hero-veil"></div>';
   }
 
+  function renderAboutSlides(items, fallbackImage, fallbackAlt) {
+    const slider = document.querySelector("[data-about-slider]");
+    if (!slider) return;
+
+    const slides = (Array.isArray(items) ? items : [])
+      .filter((item) => item && item.src)
+      .map((item) => ({ src: item.src, alt: item.alt || "" }));
+
+    if (!slides.length && fallbackImage) {
+      slides.push({ src: fallbackImage, alt: fallbackAlt || "" });
+    }
+
+    if (!slides.length) return;
+
+    slider.innerHTML =
+      slides
+        .map(
+          (slide, index) => `<img
+            class="about-slide${index === 0 ? " is-active" : ""}"
+            data-about-slide
+            src="${escapeAttr(slide.src)}"
+            alt="${escapeAttr(slide.alt)}"
+            loading="lazy"
+            decoding="async"
+          />`
+        )
+        .join("") +
+      (slides.length > 1
+        ? `<div class="about-slider-dots" data-about-slider-dots aria-label="Alege fotografia">
+            ${slides
+              .map(
+                (_, index) =>
+                  `<button
+                    class="about-slider-dot${index === 0 ? " is-active" : ""}"
+                    type="button"
+                    data-about-slide-to="${index}"
+                    aria-label="Fotografia ${index + 1}"
+                    aria-current="${index === 0 ? "true" : "false"}"
+                  ></button>`
+              )
+              .join("")}
+          </div>`
+        : "");
+  }
+
   function applySiteContent(data) {
     if (!data) return;
 
@@ -66,14 +111,12 @@
 
     setText("[data-content='hero.line']", data.hero?.line);
     setText("[data-content='hero.ctaPrimary']", data.hero?.ctaPrimary);
-    setText("[data-content='hero.ctaSecondary']", data.hero?.ctaSecondary);
     renderHeroSlides(data.hero?.slides);
 
     setText("[data-content='about.eyebrow']", data.about?.eyebrow);
     setText("[data-content='about.title']", data.about?.title);
     setText("[data-content='about.text']", data.about?.text);
-    setAttr("[data-content='about.image']", "src", data.about?.image);
-    setAttr("[data-content='about.image']", "alt", data.about?.imageAlt);
+    renderAboutSlides(data.about?.images, data.about?.image, data.about?.imageAlt);
 
     renderGallery(data.gallery);
 
@@ -85,10 +128,6 @@
     const caffeList = document.querySelector("[data-menu-caffe]");
     if (paniniList) paniniList.innerHTML = renderMenuItems(data.menu?.panini);
     if (caffeList) caffeList.innerHTML = renderMenuItems(data.menu?.caffe);
-
-    setText("[data-content='reservations.eyebrow']", data.reservations?.eyebrow);
-    setText("[data-content='reservations.title']", data.reservations?.title);
-    setText("[data-content='reservations.text']", data.reservations?.text);
 
     setText("[data-content='contact.eyebrow']", data.contact?.eyebrow);
     setText("[data-content='contact.title']", data.contact?.title);
@@ -109,7 +148,6 @@
     setText("[data-content='footer.instagram']", data.footer?.instagramLabel);
 
     window.__SITE_CONTENT__ = data;
-    window.__RESERVATION_EMAIL__ = data.reservations?.email || "hello@girasole.bucuresti";
   }
 
   async function loadSiteContent() {

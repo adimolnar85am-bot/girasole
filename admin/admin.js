@@ -8,17 +8,18 @@
 
   const sections = [
     { id: "meta", label: "General" },
-    { id: "hero", label: "Hero" },
+    { id: "hero", label: "Cover" },
     { id: "about", label: "Despre" },
-    { id: "gallery", label: "Galerie" },
+    { id: "gallery", label: "Galerie foto" },
     { id: "menu", label: "Meniu" },
-    { id: "reservations", label: "Rezervări" },
     { id: "contact", label: "Contact" },
     { id: "footer", label: "Footer" },
   ];
 
   let content = null;
   let activeSection = "meta";
+  let isDirty = false;
+  let isSaving = false;
 
   const loginScreen = document.getElementById("login-screen");
   const adminApp = document.getElementById("admin-app");
@@ -125,14 +126,23 @@
     return escapeHtml(str).replace(/"/g, "&quot;");
   }
 
+  function listItemActions(key, index, total) {
+    return `<div class="list-item-actions">
+      <button type="button" class="btn btn-icon" data-move-up="${key}" data-index="${index}" aria-label="Mută în sus" title="Mută în sus" ${index === 0 ? "disabled" : ""}>↑</button>
+      <button type="button" class="btn btn-icon" data-move-down="${key}" data-index="${index}" aria-label="Mută în jos" title="Mută în jos" ${index === total - 1 ? "disabled" : ""}>↓</button>
+      <button type="button" class="btn btn-danger btn-small" data-remove="${key}">Șterge</button>
+    </div>`;
+  }
+
   function renderListEditor(key, items, fields) {
     const list = items || [];
     return `<div class="list-editor" data-list="${key}">
       ${list
         .map(
           (item, i) => `<div class="list-item" data-index="${i}">
-          <div class="list-item-head"><strong>Element ${i + 1}</strong>
-            <button type="button" class="btn btn-danger btn-small" data-remove="${key}">Șterge</button>
+          <div class="list-item-head">
+            <strong>${key.startsWith("menu.") ? `Poziția ${i + 1} · ${escapeHtml(item.name || `Produs ${i + 1}`)}` : `Element ${i + 1}`}</strong>
+            ${listItemActions(key, i, list.length)}
           </div>
           ${fields
             .map((f) => field(f.label, `${key}.${i}.${f.name}`, item[f.name], f.type || "text", f.rows))
@@ -140,8 +150,41 @@
         </div>`
         )
         .join("")}
-      <button type="button" class="btn btn-ghost btn-small" data-add="${key}">+ Adaugă element</button>
+      <button type="button" class="btn btn-add" data-add="${key}">+ Adaugă element</button>
     </div>`;
+  }
+
+  function renderImageListEditor(key, items) {
+    const list = items || [];
+    return `<div class="list-editor image-list-editor" data-list="${key}">
+      ${list
+        .map(
+          (src, i) => `<div class="list-item image-list-item" data-index="${i}">
+            <div class="list-item-head">
+              <strong>Slide ${i + 1}</strong>
+              ${listItemActions(key, i, list.length)}
+            </div>
+            ${imageField("Fotografie", `${key}.${i}`, src)}
+          </div>`
+        )
+        .join("")}
+      <button type="button" class="btn btn-add" data-add="${key}">+ Adaugă fotografie</button>
+    </div>`;
+  }
+
+  function setDirty(value = true) {
+    isDirty = value;
+    saveBtn.disabled = isSaving || !isDirty;
+    saveBtn.classList.toggle("has-changes", isDirty);
+    saveBtn.textContent = isSaving ? "Se salvează…" : isDirty ? "Salvează modificările" : "Totul salvat";
+    if (!isDirty && !isSaving) {
+      saveStatus.textContent = "Toate modificările sunt salvate.";
+      saveStatus.classList.remove("is-error", "is-pending");
+    } else if (isDirty && !isSaving) {
+      saveStatus.textContent = "Ai modificări nesalvate.";
+      saveStatus.classList.remove("is-error");
+      saveStatus.classList.add("is-pending");
+    }
   }
 
   function renderPanels() {
@@ -156,10 +199,16 @@
         <h2>Prima pagină</h2>
         <div class="field-grid">
           ${field("Text principal", "hero.line", content.hero.line, "textarea", 2)}
-          ${field("Buton principal", "hero.ctaPrimary", content.hero.ctaPrimary)}
-          ${field("Buton secundar", "hero.ctaSecondary", content.hero.ctaSecondary)}
-          ${imageField("Imagine slide 1", "hero.slides.0", content.hero.slides?.[0])}
-          ${imageField("Imagine slide 2", "hero.slides.1", content.hero.slides?.[1])}
+          ${field("Text buton meniu", "hero.ctaPrimary", content.hero.ctaPrimary)}
+        </div>
+        <div class="panel-section">
+          <div class="panel-section-heading">
+            <div>
+              <h3>Fotografii cover</h3>
+              <p>Adaugă, șterge sau schimbă ordinea imaginilor care rulează în prima secțiune.</p>
+            </div>
+          </div>
+          ${renderImageListEditor("hero.slides", content.hero.slides)}
         </div>
       </section>
 
@@ -169,8 +218,11 @@
           ${field("Etichetă", "about.eyebrow", content.about.eyebrow)}
           ${field("Titlu", "about.title", content.about.title)}
           ${field("Text", "about.text", content.about.text, "textarea", 4)}
-          ${imageField("Imagine", "about.image", content.about.image)}
-          ${field("Descriere imagine", "about.imageAlt", content.about.imageAlt)}
+          <p class="panel-hint">Fotografiile din sliderul sectiunii Despre. Le poti adauga, sterge sau reordona aici.</p>
+          ${renderListEditor("about.images", content.about.images || (content.about.image ? [{ src: content.about.image, alt: content.about.imageAlt || "" }] : []), [
+            { label: "Fotografie", name: "src", type: "image" },
+            { label: "Descriere foto", name: "alt" },
+          ])}
         </div>
       </section>
 
@@ -190,28 +242,34 @@
           ${field("Text intro", "menu.text", content.menu.text, "textarea", 2)}
           ${field("Notă subsol", "menu.footnote", content.menu.footnote, "textarea", 2)}
         </div>
-        <h3 style="margin-top:1.25rem;font-size:1rem;color:var(--green)">Panini</h3>
+        <div class="menu-import-panel">
+          <div class="menu-import-copy">
+            <h3>Importă sau exportă meniul</h3>
+            <p>Încarcă un fișier Excel sau JSON pentru a actualiza produsele și ordinea lor. Importul înlocuiește categoriile prezente în fișier.</p>
+            <p class="menu-import-format">Excel: foi numite <strong>Panini</strong> și <strong>Caffe</strong>, coloane <strong>Pozitie</strong>, <strong>Produs</strong>, <strong>Pret</strong>, <strong>Descriere</strong>. Pentru o singură foaie, include și coloana <strong>Categorie</strong>.</p>
+          </div>
+          <div class="menu-import-actions">
+            <button type="button" class="btn btn-ghost" data-menu-template>Descarcă Excel</button>
+            <button type="button" class="btn btn-ghost" data-menu-export>Exportă JSON</button>
+            <label class="btn btn-primary menu-import-file-label">
+              Importă fișier
+              <input type="file" accept=".xlsx,.xls,.csv,.json,application/json" hidden data-menu-import-file />
+            </label>
+          </div>
+          <p class="menu-import-status" data-menu-import-status role="status">Descarcă Excelul actual, editează produsele și reîncarcă-l.</p>
+        </div>
+        <h3 class="menu-category-title">Panini</h3>
         ${renderListEditor("menu.panini", content.menu.panini, [
           { label: "Nume", name: "name" },
           { label: "Preț", name: "price" },
           { label: "Descriere", name: "desc", type: "textarea", rows: 2 },
         ])}
-        <h3 style="margin-top:1.25rem;font-size:1rem;color:var(--green)">Caffè</h3>
+        <h3 class="menu-category-title">Caffè</h3>
         ${renderListEditor("menu.caffe", content.menu.caffe, [
           { label: "Nume", name: "name" },
           { label: "Preț", name: "price" },
           { label: "Descriere", name: "desc", type: "textarea", rows: 2 },
         ])}
-      </section>
-
-      <section class="admin-panel${activeSection === "reservations" ? " is-active" : ""}" data-panel="reservations">
-        <h2>Rezervări</h2>
-        <div class="field-grid">
-          ${field("Etichetă", "reservations.eyebrow", content.reservations.eyebrow)}
-          ${field("Titlu", "reservations.title", content.reservations.title)}
-          ${field("Text", "reservations.text", content.reservations.text, "textarea", 3)}
-          ${field("Email rezervări", "reservations.email", content.reservations.email, "email")}
-        </div>
       </section>
 
       <section class="admin-panel${activeSection === "contact" ? " is-active" : ""}" data-panel="contact">
@@ -241,14 +299,333 @@
 
     bindListActions();
     bindImageFields();
+    bindMenuImportActions();
+  }
+
+  function menuExportData() {
+    collectFormData();
+    const toRows = (items) =>
+      (items || [])
+        .filter((item) => item && String(item.name || "").trim())
+        .map((item, index) => ({
+          position: index + 1,
+          name: String(item.name || "").trim(),
+          price: String(item.price ?? "").trim(),
+          desc: String(item.desc ?? "").trim(),
+        }));
+
+    return {
+      panini: toRows(content.menu.panini),
+      caffe: toRows(content.menu.caffe),
+    };
+  }
+
+  function downloadFile(filename, contents, mimeType) {
+    const blob = new Blob([contents], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function downloadMenuJson() {
+    const data = menuExportData();
+    downloadFile(
+      "girasole-meniu.json",
+      JSON.stringify(data, null, 2),
+      "application/json;charset=utf-8"
+    );
+  }
+
+  let xlsxLibraryPromise = null;
+
+  function loadXlsxLibrary() {
+    if (window.XLSX) return Promise.resolve(window.XLSX);
+    if (xlsxLibraryPromise) return xlsxLibraryPromise;
+
+    xlsxLibraryPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";
+      script.async = true;
+      script.onload = () => {
+        if (window.XLSX) resolve(window.XLSX);
+        else reject(new Error("Nu am putut inițializa biblioteca Excel."));
+      };
+      script.onerror = () => {
+        xlsxLibraryPromise = null;
+        reject(new Error("Biblioteca Excel nu s-a putut încărca. Încearcă importul JSON."));
+      };
+      document.head.appendChild(script);
+    });
+
+    return xlsxLibraryPromise;
+  }
+
+  async function downloadMenuExcel() {
+    const XLSX = await loadXlsxLibrary();
+    const data = menuExportData();
+    const workbook = XLSX.utils.book_new();
+
+    const addSheet = (name, rows) => {
+      const sheet = XLSX.utils.json_to_sheet(
+        rows.map((item) => ({
+          Pozitie: item.position,
+          Produs: item.name,
+          Pret: item.price,
+          Descriere: item.desc,
+        })),
+        { header: ["Pozitie", "Produs", "Pret", "Descriere"] }
+      );
+      sheet["!cols"] = [{ wch: 10 }, { wch: 28 }, { wch: 14 }, { wch: 58 }];
+      XLSX.utils.book_append_sheet(workbook, sheet, name);
+    };
+
+    addSheet("Panini", data.panini);
+    addSheet("Caffe", data.caffe);
+    XLSX.writeFile(workbook, "girasole-meniu-editabil.xlsx");
+  }
+
+  function normalizeColumn(value) {
+    return String(value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+  }
+
+  function getRowValue(row, aliases) {
+    for (const [key, value] of Object.entries(row || {})) {
+      if (aliases.includes(normalizeColumn(key))) return value;
+    }
+    return "";
+  }
+
+  function normalizeMenuRows(rows, label) {
+    if (!Array.isArray(rows)) throw new Error(`Lista ${label} trebuie să fie un tabel de produse.`);
+
+    const normalized = [];
+    rows.forEach((row, index) => {
+      const name = getRowValue(row, ["produs", "nume", "name", "product", "title", "denumire", "denumireprodus"]);
+      const price = getRowValue(row, ["pret", "price", "cost"]);
+      const desc = getRowValue(row, ["descriere", "desc", "description", "ingrediente", "ingredients"]);
+      const position = getRowValue(row, ["pozitie", "position", "ordine", "order", "sortorder"]);
+      const hasAnyValue = [name, price, desc, position].some((value) => String(value ?? "").trim() !== "");
+      if (!hasAnyValue) return;
+      if (!String(name ?? "").trim()) {
+        throw new Error(`Produs fără nume în categoria ${label}, rândul ${index + 2}.`);
+      }
+
+      const hasPosition = String(position ?? "").trim() !== "" && Number.isFinite(Number(position));
+      normalized.push({
+        item: {
+          name: String(name).trim(),
+          price: String(price ?? "").trim(),
+          desc: String(desc ?? "").trim(),
+        },
+        position: hasPosition ? Number(position) : index + 1,
+        sourceIndex: index,
+      });
+    });
+
+    normalized.sort((a, b) => a.position - b.position || a.sourceIndex - b.sourceIndex);
+    return normalized.map((entry) => entry.item);
+  }
+
+  function normalizeJsonMenu(parsed) {
+    const source = parsed?.menu && typeof parsed.menu === "object" ? parsed.menu : parsed;
+    const result = {};
+
+    ["panini", "caffe"].forEach((category) => {
+      if (Object.prototype.hasOwnProperty.call(source || {}, category)) {
+        result[category] = normalizeMenuRows(source[category], category === "panini" ? "Panini" : "Caffe");
+      }
+    });
+
+    const genericItems = source?.items || source?.products;
+    if (!Object.keys(result).length && Array.isArray(genericItems)) {
+      result.panini = [];
+      result.caffe = [];
+      genericItems.forEach((item, index) => {
+        const category = normalizeColumn(getRowValue({ category: item.category || item.categorie || item.type || "" }, ["category"]));
+        if (["panini", "panino", "sandwich", "sandwiches"].includes(category)) {
+          result.panini.push({ ...item, position: item.position ?? item.pozitie ?? index + 1 });
+        } else if (["caffe", "cafe", "cafea", "coffee", "bauturi", "drink", "drinks"].includes(category)) {
+          result.caffe.push({ ...item, position: item.position ?? item.pozitie ?? index + 1 });
+        } else {
+          throw new Error(`Categorie necunoscută pentru produsul ${item.name || item.nume || index + 1}.`);
+        }
+      });
+      result.panini = normalizeMenuRows(result.panini, "Panini");
+      result.caffe = normalizeMenuRows(result.caffe, "Caffe");
+    }
+
+    if (!Object.keys(result).length) {
+      throw new Error("JSON invalid. Folosește cheile «panini» și «caffe», fiecare cu nume, pret și descriere.");
+    }
+    return result;
+  }
+
+  function parseWorkbookMenu(workbook, XLSX) {
+    const result = {};
+    const names = workbook.SheetNames || [];
+    const normalizedNames = names.map((name) => ({ name, key: normalizeColumn(name) }));
+    const paniniSheet = normalizedNames.find((sheet) => sheet.key.includes("panini"));
+    const caffeSheet = normalizedNames.find((sheet) =>
+      ["caffe", "cafe", "cafea", "coffee", "bauturi", "drinks"].some((key) => sheet.key.includes(key))
+    );
+
+    if (paniniSheet) {
+      result.panini = normalizeMenuRows(
+        XLSX.utils.sheet_to_json(workbook.Sheets[paniniSheet.name], { defval: "", raw: false }),
+        "Panini"
+      );
+    }
+    if (caffeSheet) {
+      result.caffe = normalizeMenuRows(
+        XLSX.utils.sheet_to_json(workbook.Sheets[caffeSheet.name], { defval: "", raw: false }),
+        "Caffe"
+      );
+    }
+    if (Object.keys(result).length) return result;
+
+    const genericSheet = normalizedNames.find((sheet) =>
+      ["meniu", "menu", "produse", "products"].includes(sheet.key)
+    ) || normalizedNames[0];
+    if (!genericSheet) throw new Error("Fișierul Excel nu conține foi cu produse.");
+
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[genericSheet.name], { defval: "", raw: false });
+    const grouped = { panini: [], caffe: [] };
+    rows.forEach((row, index) => {
+      const category = normalizeColumn(getRowValue(row, ["categorie", "category", "sectiune", "section", "tip", "type", "grup"]));
+      if (!category) {
+        const hasContent = Object.values(row).some((value) => String(value ?? "").trim() !== "");
+        if (hasContent) throw new Error("Pentru o singură foaie Excel, adaugă o coloană «Categorie» cu valorile Panini sau Caffe.");
+        return;
+      }
+      const item = { ...row, position: getRowValue(row, ["pozitie", "position", "ordine", "order"]) || index + 1 };
+      if (["panini", "panino", "sandwich", "sandwiches"].includes(category)) grouped.panini.push(item);
+      else if (["caffe", "cafe", "cafea", "coffee", "bauturi", "drink", "drinks"].includes(category)) grouped.caffe.push(item);
+      else throw new Error(`Categorie necunoscută la rândul ${index + 2}: ${category}.`);
+    });
+
+    if (!grouped.panini.length && !grouped.caffe.length) {
+      throw new Error("Nu am găsit produse. Verifică foile Panini/Caffe sau coloana Categorie.");
+    }
+    if (grouped.panini.length) {
+      result.panini = normalizeMenuRows(grouped.panini, "Panini");
+    }
+    if (grouped.caffe.length) {
+      result.caffe = normalizeMenuRows(grouped.caffe, "Caffe");
+    }
+    return result;
+  }
+
+  async function parseMenuFile(file) {
+    const extension = file.name.split(".").pop().toLowerCase();
+    if (extension === "json") {
+      let parsed;
+      try {
+        parsed = JSON.parse(await file.text());
+      } catch {
+        throw new Error("Nu am putut citi JSON-ul. Verifică virgulele și acoladele.");
+      }
+      return normalizeJsonMenu(parsed);
+    }
+
+    if (!["xlsx", "xls", "csv"].includes(extension)) {
+      throw new Error("Format neacceptat. Încarcă un fișier .xlsx, .xls, .csv sau .json.");
+    }
+
+    const XLSX = await loadXlsxLibrary();
+    const workbook = XLSX.read(await file.arrayBuffer(), { type: "array" });
+    return parseWorkbookMenu(workbook, XLSX);
+  }
+
+  function bindMenuImportActions() {
+    const fileInput = adminMain.querySelector("[data-menu-import-file]");
+    const importStatus = adminMain.querySelector("[data-menu-import-status]");
+    const templateButton = adminMain.querySelector("[data-menu-template]");
+    const exportButton = adminMain.querySelector("[data-menu-export]");
+
+    exportButton?.addEventListener("click", () => {
+      try {
+        downloadMenuJson();
+        if (importStatus) importStatus.textContent = "Meniul curent a fost exportat în JSON.";
+      } catch (err) {
+        if (importStatus) importStatus.textContent = err.message;
+      }
+    });
+
+    templateButton?.addEventListener("click", async () => {
+      if (importStatus) importStatus.textContent = "Se pregătește fișierul Excel…";
+      try {
+        await downloadMenuExcel();
+        if (importStatus) importStatus.textContent = "Excelul editabil a fost descărcat.";
+      } catch (err) {
+        if (importStatus) {
+          importStatus.textContent = err.message;
+          importStatus.classList.add("is-error");
+        }
+      }
+    });
+
+    fileInput?.addEventListener("change", async () => {
+      const file = fileInput.files?.[0];
+      fileInput.value = "";
+      if (!file) return;
+      if (importStatus) {
+        importStatus.textContent = `Se verifică ${file.name}…`;
+        importStatus.classList.remove("is-error");
+      }
+
+      try {
+        const imported = await parseMenuFile(file);
+        const categories = Object.keys(imported);
+        if (!categories.length) throw new Error("Fișierul nu conține categorii de meniu.");
+        collectFormData();
+        categories.forEach((category) => {
+          content.menu[category] = imported[category];
+        });
+        setDirty(true);
+        renderPanels();
+        const summary = categories.map((category) =>
+          category === "panini" ? "Panini" : "Caffe"
+        ).join(" și ");
+        const count = categories.reduce((total, category) => total + imported[category].length, 0);
+        const status = adminMain.querySelector("[data-menu-import-status]");
+        if (status) status.textContent = `Import reușit: ${count} produse în ${summary}. Verifică lista și apasă „Salvează modificările”.`;
+      } catch (err) {
+        if (importStatus) {
+          importStatus.textContent = err.message || "Importul a eșuat.";
+          importStatus.classList.add("is-error");
+        }
+      }
+    });
   }
 
   function renderNav() {
-    adminNav.innerHTML = sections
-      .map(
-        (s) =>
-          `<button type="button" class="${s.id === activeSection ? "is-active" : ""}" data-section="${s.id}">${s.label}</button>`
-      )
+    const groups = [
+      { label: "Conținut", ids: ["meta", "hero", "about", "gallery", "menu"] },
+      { label: "Informații", ids: ["contact", "footer"] },
+    ];
+    adminNav.innerHTML = groups
+      .map((group) => `<div class="admin-nav-group">
+        <p class="admin-nav-label">${group.label}</p>
+        <div class="admin-nav-items">
+          ${group.ids
+            .map((id) => {
+              const section = sections.find((item) => item.id === id);
+              return section
+                ? `<button type="button" class="${id === activeSection ? "is-active" : ""}" data-section="${id}">${section.label}</button>`
+                : "";
+            })
+            .join("")}
+        </div>
+      </div>`)
       .join("");
     adminNav.querySelectorAll("button").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -404,6 +781,7 @@
           const path = await uploadAsset(file);
           input.value = path;
           updateImagePreview(container, path);
+          setDirty(true);
           setImageStatus(container, "Poză încărcată. Apasă Salvează modificările.");
         } catch (err) {
           setImageStatus(container, err.message, true);
@@ -418,10 +796,12 @@
         collectFormData();
         const key = btn.dataset.add;
         const list = getNested(content, key) || [];
-        if (key === "gallery") list.push({ src: "", alt: "" });
+        if (key === "hero.slides") list.push("");
+        else if (key === "gallery" || key === "about.images") list.push({ src: "", alt: "" });
         else if (key.startsWith("menu.")) list.push({ name: "", price: "", desc: "" });
         else list.push({ name: "", desc: "" });
         setNested(content, key, list);
+        setDirty(true);
         renderPanels();
       });
     });
@@ -435,6 +815,22 @@
         const list = getNested(content, key) || [];
         list.splice(index, 1);
         setNested(content, key, list);
+        setDirty(true);
+        renderPanels();
+      });
+    });
+
+    adminMain.querySelectorAll("[data-move-up], [data-move-down]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        collectFormData();
+        const key = btn.dataset.moveUp || btn.dataset.moveDown;
+        const index = Number(btn.dataset.index);
+        const list = getNested(content, key) || [];
+        const nextIndex = btn.hasAttribute("data-move-up") ? index - 1 : index + 1;
+        if (nextIndex < 0 || nextIndex >= list.length) return;
+        [list[index], list[nextIndex]] = [list[nextIndex], list[index]];
+        setNested(content, key, list);
+        setDirty(true);
         renderPanels();
       });
     });
@@ -449,6 +845,7 @@
     adminApp.hidden = false;
     renderNav();
     renderPanels();
+    setDirty(false);
   }
 
   loginForm?.addEventListener("submit", async (e) => {
@@ -477,16 +874,38 @@
     }
   });
 
+  adminMain.addEventListener("input", () => setDirty(true));
+  adminMain.addEventListener("change", () => setDirty(true));
+
+  window.addEventListener("beforeunload", (event) => {
+    if (!isDirty) return;
+    event.preventDefault();
+    event.returnValue = "";
+  });
+
   saveBtn.addEventListener("click", async () => {
-    saveStatus.textContent = "Se salvează…";
-    saveStatus.classList.remove("is-error");
+    if (isSaving || !isDirty) return;
+    collectFormData();
+    // Remove empty entries before persisting image lists.
+    content.hero.slides = (content.hero.slides || []).filter((src) => String(src || "").trim());
+    content.about.images = (content.about.images || []).filter((item) => item && item.src && item.src.trim());
+    content.gallery = (content.gallery || []).filter((item) => item && item.src && item.src.trim());
+    isSaving = true;
+    setDirty(true);
+    saveStatus.textContent = "Se salvează modificările…";
+    saveStatus.classList.remove("is-error", "is-pending");
     try {
-      collectFormData();
       await saveContent();
-      saveStatus.textContent = "Salvat! Modificările apar imediat pe site.";
+      isDirty = false;
+      saveStatus.textContent = "Salvat. Modificările sunt publicate pe site.";
+      saveStatus.classList.remove("is-error", "is-pending");
     } catch (err) {
+      isDirty = true;
       saveStatus.textContent = err.message;
       saveStatus.classList.add("is-error");
+    } finally {
+      isSaving = false;
+      setDirty(isDirty);
     }
   });
 
