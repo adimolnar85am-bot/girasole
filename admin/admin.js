@@ -8,17 +8,18 @@
 
   const sections = [
     { id: "meta", label: "General" },
-    { id: "hero", label: "Hero" },
+    { id: "hero", label: "Cover" },
     { id: "about", label: "Despre" },
-    { id: "gallery", label: "Galerie" },
+    { id: "gallery", label: "Galerie foto" },
     { id: "menu", label: "Meniu" },
-    { id: "reservations", label: "Rezervări" },
     { id: "contact", label: "Contact" },
     { id: "footer", label: "Footer" },
   ];
 
   let content = null;
   let activeSection = "meta";
+  let isDirty = false;
+  let isSaving = false;
 
   const loginScreen = document.getElementById("login-screen");
   const adminApp = document.getElementById("admin-app");
@@ -125,14 +126,23 @@
     return escapeHtml(str).replace(/"/g, "&quot;");
   }
 
+  function listItemActions(key, index, total) {
+    return `<div class="list-item-actions">
+      <button type="button" class="btn btn-icon" data-move-up="${key}" data-index="${index}" aria-label="Mută în sus" title="Mută în sus" ${index === 0 ? "disabled" : ""}>↑</button>
+      <button type="button" class="btn btn-icon" data-move-down="${key}" data-index="${index}" aria-label="Mută în jos" title="Mută în jos" ${index === total - 1 ? "disabled" : ""}>↓</button>
+      <button type="button" class="btn btn-danger btn-small" data-remove="${key}">Șterge</button>
+    </div>`;
+  }
+
   function renderListEditor(key, items, fields) {
     const list = items || [];
     return `<div class="list-editor" data-list="${key}">
       ${list
         .map(
           (item, i) => `<div class="list-item" data-index="${i}">
-          <div class="list-item-head"><strong>Element ${i + 1}</strong>
-            <button type="button" class="btn btn-danger btn-small" data-remove="${key}">Șterge</button>
+          <div class="list-item-head">
+            <strong>Element ${i + 1}</strong>
+            ${listItemActions(key, i, list.length)}
           </div>
           ${fields
             .map((f) => field(f.label, `${key}.${i}.${f.name}`, item[f.name], f.type || "text", f.rows))
@@ -140,8 +150,41 @@
         </div>`
         )
         .join("")}
-      <button type="button" class="btn btn-ghost btn-small" data-add="${key}">+ Adaugă element</button>
+      <button type="button" class="btn btn-add" data-add="${key}">+ Adaugă element</button>
     </div>`;
+  }
+
+  function renderImageListEditor(key, items) {
+    const list = items || [];
+    return `<div class="list-editor image-list-editor" data-list="${key}">
+      ${list
+        .map(
+          (src, i) => `<div class="list-item image-list-item" data-index="${i}">
+            <div class="list-item-head">
+              <strong>Slide ${i + 1}</strong>
+              ${listItemActions(key, i, list.length)}
+            </div>
+            ${imageField("Fotografie", `${key}.${i}`, src)}
+          </div>`
+        )
+        .join("")}
+      <button type="button" class="btn btn-add" data-add="${key}">+ Adaugă fotografie</button>
+    </div>`;
+  }
+
+  function setDirty(value = true) {
+    isDirty = value;
+    saveBtn.disabled = isSaving || !isDirty;
+    saveBtn.classList.toggle("has-changes", isDirty);
+    saveBtn.textContent = isSaving ? "Se salvează…" : isDirty ? "Salvează modificările" : "Totul salvat";
+    if (!isDirty && !isSaving) {
+      saveStatus.textContent = "Toate modificările sunt salvate.";
+      saveStatus.classList.remove("is-error", "is-pending");
+    } else if (isDirty && !isSaving) {
+      saveStatus.textContent = "Ai modificări nesalvate.";
+      saveStatus.classList.remove("is-error");
+      saveStatus.classList.add("is-pending");
+    }
   }
 
   function renderPanels() {
@@ -156,10 +199,16 @@
         <h2>Prima pagină</h2>
         <div class="field-grid">
           ${field("Text principal", "hero.line", content.hero.line, "textarea", 2)}
-          ${field("Buton principal", "hero.ctaPrimary", content.hero.ctaPrimary)}
-          ${field("Buton secundar", "hero.ctaSecondary", content.hero.ctaSecondary)}
-          ${imageField("Imagine slide 1", "hero.slides.0", content.hero.slides?.[0])}
-          ${imageField("Imagine slide 2", "hero.slides.1", content.hero.slides?.[1])}
+          ${field("Text buton meniu", "hero.ctaPrimary", content.hero.ctaPrimary)}
+        </div>
+        <div class="panel-section">
+          <div class="panel-section-heading">
+            <div>
+              <h3>Fotografii cover</h3>
+              <p>Adaugă, șterge sau schimbă ordinea imaginilor care rulează în prima secțiune.</p>
+            </div>
+          </div>
+          ${renderImageListEditor("hero.slides", content.hero.slides)}
         </div>
       </section>
 
@@ -207,16 +256,6 @@
         ])}
       </section>
 
-      <section class="admin-panel${activeSection === "reservations" ? " is-active" : ""}" data-panel="reservations">
-        <h2>Rezervări</h2>
-        <div class="field-grid">
-          ${field("Etichetă", "reservations.eyebrow", content.reservations.eyebrow)}
-          ${field("Titlu", "reservations.title", content.reservations.title)}
-          ${field("Text", "reservations.text", content.reservations.text, "textarea", 3)}
-          ${field("Email rezervări", "reservations.email", content.reservations.email, "email")}
-        </div>
-      </section>
-
       <section class="admin-panel${activeSection === "contact" ? " is-active" : ""}" data-panel="contact">
         <h2>Contact</h2>
         <div class="field-grid">
@@ -247,11 +286,24 @@
   }
 
   function renderNav() {
-    adminNav.innerHTML = sections
-      .map(
-        (s) =>
-          `<button type="button" class="${s.id === activeSection ? "is-active" : ""}" data-section="${s.id}">${s.label}</button>`
-      )
+    const groups = [
+      { label: "Conținut", ids: ["meta", "hero", "about", "gallery", "menu"] },
+      { label: "Informații", ids: ["contact", "footer"] },
+    ];
+    adminNav.innerHTML = groups
+      .map((group) => `<div class="admin-nav-group">
+        <p class="admin-nav-label">${group.label}</p>
+        <div class="admin-nav-items">
+          ${group.ids
+            .map((id) => {
+              const section = sections.find((item) => item.id === id);
+              return section
+                ? `<button type="button" class="${id === activeSection ? "is-active" : ""}" data-section="${id}">${section.label}</button>`
+                : "";
+            })
+            .join("")}
+        </div>
+      </div>`)
       .join("");
     adminNav.querySelectorAll("button").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -421,10 +473,12 @@
         collectFormData();
         const key = btn.dataset.add;
         const list = getNested(content, key) || [];
-        if (key === "gallery" || key === "about.images") list.push({ src: "", alt: "" });
+        if (key === "hero.slides") list.push("");
+        else if (key === "gallery" || key === "about.images") list.push({ src: "", alt: "" });
         else if (key.startsWith("menu.")) list.push({ name: "", price: "", desc: "" });
         else list.push({ name: "", desc: "" });
         setNested(content, key, list);
+        setDirty(true);
         renderPanels();
       });
     });
@@ -438,6 +492,22 @@
         const list = getNested(content, key) || [];
         list.splice(index, 1);
         setNested(content, key, list);
+        setDirty(true);
+        renderPanels();
+      });
+    });
+
+    adminMain.querySelectorAll("[data-move-up], [data-move-down]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        collectFormData();
+        const key = btn.dataset.moveUp || btn.dataset.moveDown;
+        const index = Number(btn.dataset.index);
+        const list = getNested(content, key) || [];
+        const nextIndex = btn.hasAttribute("data-move-up") ? index - 1 : index + 1;
+        if (nextIndex < 0 || nextIndex >= list.length) return;
+        [list[index], list[nextIndex]] = [list[nextIndex], list[index]];
+        setNested(content, key, list);
+        setDirty(true);
         renderPanels();
       });
     });
@@ -452,6 +522,7 @@
     adminApp.hidden = false;
     renderNav();
     renderPanels();
+    setDirty(false);
   }
 
   loginForm?.addEventListener("submit", async (e) => {
@@ -480,16 +551,38 @@
     }
   });
 
+  adminMain.addEventListener("input", () => setDirty(true));
+  adminMain.addEventListener("change", () => setDirty(true));
+
+  window.addEventListener("beforeunload", (event) => {
+    if (!isDirty) return;
+    event.preventDefault();
+    event.returnValue = "";
+  });
+
   saveBtn.addEventListener("click", async () => {
-    saveStatus.textContent = "Se salvează…";
-    saveStatus.classList.remove("is-error");
+    if (isSaving || !isDirty) return;
+    collectFormData();
+    // Remove empty entries before persisting image lists.
+    content.hero.slides = (content.hero.slides || []).filter((src) => String(src || "").trim());
+    content.about.images = (content.about.images || []).filter((item) => item && item.src && item.src.trim());
+    content.gallery = (content.gallery || []).filter((item) => item && item.src && item.src.trim());
+    isSaving = true;
+    setDirty(true);
+    saveStatus.textContent = "Se salvează modificările…";
+    saveStatus.classList.remove("is-error", "is-pending");
     try {
-      collectFormData();
       await saveContent();
-      saveStatus.textContent = "Salvat! Modificările apar imediat pe site.";
+      isDirty = false;
+      saveStatus.textContent = "Salvat. Modificările sunt publicate pe site.";
+      saveStatus.classList.remove("is-error", "is-pending");
     } catch (err) {
+      isDirty = true;
       saveStatus.textContent = err.message;
       saveStatus.classList.add("is-error");
+    } finally {
+      isSaving = false;
+      setDirty(isDirty);
     }
   });
 
