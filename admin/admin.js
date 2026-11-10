@@ -515,8 +515,10 @@
     if (!grouped.panini.length && !grouped.caffe.length) {
       throw new Error("Nu am găsit produse. Verifică foile Panini/Caffe sau coloana Categorie.");
     }
-    if (rows.length) {
+    if (grouped.panini.length) {
       result.panini = normalizeMenuRows(grouped.panini, "Panini");
+    }
+    if (grouped.caffe.length) {
       result.caffe = normalizeMenuRows(grouped.caffe, "Caffe");
     }
     return result;
