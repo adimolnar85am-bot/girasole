@@ -187,7 +187,7 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: "Conținut invalid. Reîncarcă pagina admin." });
       }
       const gitConfig = getGitHubConfig();
-      if ((process.env.VERCEL_ENV === "preview" || ["deploy-preview", "branch-deploy", "production"].includes(process.env.CONTEXT)) && gitConfig.branchSource === "fallback" && (process.env.NETLIFY || process.env.CONTEXT)) {
+      if ((process.env.NETLIFY || process.env.CONTEXT) && gitConfig.branchSource === "fallback") {
         throw new Error("Netlify deployment branch unresolved. Set GITHUB_BRANCH or ensure the BRANCH environment variable is available. Write blocked to protect master.");
       }
       if (process.env.VERCEL_ENV === "preview" && gitConfig.branchSource === "fallback") {
