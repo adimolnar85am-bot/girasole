@@ -4,7 +4,7 @@
     "description": "Girasole Panini e Caffè — panini artizanale și cafea  "
   },
   "hero": {
-    "line": "Panini artizanale și cafea",
+    "line": "artizanale și cafea",
     "ctaPrimary": "Meniu",
     "ctaSecondary": "Rezervă",
     "slides": [
@@ -109,6 +109,75 @@
         "name": "Filtru / Batch",
         "price": "13 lei",
         "desc": "Cafea de filtru a zilei"
+      }
+    ],
+    "sections": [
+      {
+        "id": "panini",
+        "title": "Panini",
+        "items": [
+          {
+            "name": "Prosciutto",
+            "price": "32 lei",
+            "desc": "Prosciutto crudo, rucola, mozzarella"
+          },
+          {
+            "name": "Caprese",
+            "price": "30 lei",
+            "desc": "Mozzarella, roșii, busuioc"
+          },
+          {
+            "name": "Vegetariano",
+            "price": "28 lei",
+            "desc": "Legume la cuptor, pesto, mozzarella"
+          },
+          {
+            "name": "Tonno",
+            "price": "31 lei",
+            "desc": "Ton, ceapă roșie, lămâie"
+          },
+          {
+            "name": "Formaggi",
+            "price": "29 lei",
+            "desc": "Mix de brânzeturi, miere, nuci"
+          }
+        ]
+      },
+      {
+        "id": "cafea",
+        "title": "Caffè",
+        "items": [
+          {
+            "name": "Espresso",
+            "price": "10 lei",
+            "desc": "Simplu, dublu la cerere"
+          },
+          {
+            "name": "Americano",
+            "price": "12 lei",
+            "desc": "Espresso lungit cu apă fierbinte"
+          },
+          {
+            "name": "Cappuccino",
+            "price": "14 lei",
+            "desc": "Espresso, lapte texturat"
+          },
+          {
+            "name": "Latte",
+            "price": "15 lei",
+            "desc": "Espresso, lapte, spumă fină"
+          },
+          {
+            "name": "Iced Latte",
+            "price": "16 lei",
+            "desc": "Espresso, lapte, gheață"
+          },
+          {
+            "name": "Filtru / Batch",
+            "price": "13 lei",
+            "desc": "Cafea de filtru a zilei"
+          }
+        ]
       }
     ]
   },
