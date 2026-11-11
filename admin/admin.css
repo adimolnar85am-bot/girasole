@@ -871,3 +871,15 @@ textarea {
   font-size: 0.88rem;
   line-height: 1.4;
 }
+
+/* Multi-category menu editor */
+.menu-sections-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin: 1.6rem 0 0.8rem; }
+.menu-sections-toolbar h3 { margin: 0; color: var(--green); font-size: 1.05rem; }
+.menu-sections-toolbar p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.82rem; }
+.menu-section-editor { margin: 0 0 1.1rem; padding: 1rem; border: 1px solid var(--line); border-radius: 6px; background: rgba(255,255,255,0.62); }
+.menu-section-editor-head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line); }
+.menu-section-title-field { flex: 1 1 240px; max-width: 480px; }
+.menu-section-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.btn-small { min-height: 36px; padding: 0.45rem 0.65rem; font-size: 0.78rem; }
+.menu-section-editor .list-editor { margin-top: 0.9rem; }
+@media (max-width: 640px) { .menu-sections-toolbar { align-items: stretch; flex-direction: column; } .menu-section-actions { width: 100%; } }

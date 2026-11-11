@@ -124,10 +124,21 @@
     setText("[data-content='menu.title']", data.menu?.title);
     setText("[data-content='menu.text']", data.menu?.text);
     setText("[data-content='menu.footnote']", data.menu?.footnote);
-    const paniniList = document.querySelector("[data-menu-panini]");
-    const caffeList = document.querySelector("[data-menu-caffe]");
-    if (paniniList) paniniList.innerHTML = renderMenuItems(data.menu?.panini);
-    if (caffeList) caffeList.innerHTML = renderMenuItems(data.menu?.caffe);
+    const menuSections = document.querySelector("[data-menu-sections]");
+    if (menuSections && Array.isArray(data.menu?.sections) && data.menu.sections.length) {
+      menuSections.innerHTML = data.menu.sections
+        .filter((section) => section && String(section.title || "").trim())
+        .map((section) => `<div class="menu-col reveal">
+          <h3>${escapeHtml(section.title)}</h3>
+          <ul class="menu-list">${renderMenuItems(section.items)}</ul>
+        </div>`)
+        .join("");
+    } else {
+      const paniniList = document.querySelector("[data-menu-panini]");
+      const caffeList = document.querySelector("[data-menu-caffe]");
+      if (paniniList) paniniList.innerHTML = renderMenuItems(data.menu?.panini);
+      if (caffeList) caffeList.innerHTML = renderMenuItems(data.menu?.caffe);
+    }
 
     setText("[data-content='contact.eyebrow']", data.contact?.eyebrow);
     setText("[data-content='contact.title']", data.contact?.title);
