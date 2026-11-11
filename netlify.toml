@@ -11,18 +11,6 @@
   included_files = ["data/site-content.json"]
 
 [[redirects]]
-  from = "/api/content"
-  to = "/.netlify/functions/content"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/assets"
-  to = "/.netlify/functions/assets"
-  status = 200
-  force = true
-
-[[redirects]]
   from = "/admin"
   to = "/admin/index.html"
   status = 200
