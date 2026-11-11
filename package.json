@@ -1,4 +1,7 @@
 {
   "name": "girasole",
-  "private": true
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-site.js"
+  }
 }

@@ -63,11 +63,11 @@ async function getSaveDiagnostics() {
   const config = getGitHubConfig();
   const snapshot = await fetchGitHubFile(CONTENT_PATH);
   return {
-    environment: process.env.VERCEL_ENV || "unknown",
+    environment: process.env.VERCEL_ENV || process.env.CONTEXT || "unknown",
     deploymentBranch: process.env.VERCEL_GIT_COMMIT_REF || null,
     branch: config.branch,
     branchSource: config.branchSource,
-    branchLooksLikePreviewFallback: process.env.VERCEL_ENV === "preview" && config.branchSource === "fallback",
+    branchLooksLikePreviewFallback: (process.env.VERCEL_ENV === "preview" || ["deploy-preview", "branch-deploy"].includes(process.env.CONTEXT)) && config.branchSource === "fallback",
     githubTokenConfigured: Boolean(config.token),
     repository: `${config.owner}/${config.repoName}`,
     contentFile: snapshot.ok ? {
@@ -187,6 +187,9 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: "Conținut invalid. Reîncarcă pagina admin." });
       }
       const gitConfig = getGitHubConfig();
+      if ((process.env.VERCEL_ENV === "preview" || ["deploy-preview", "branch-deploy", "production"].includes(process.env.CONTEXT)) && gitConfig.branchSource === "fallback" && (process.env.NETLIFY || process.env.CONTEXT)) {
+        throw new Error("Netlify deployment branch unresolved. Set GITHUB_BRANCH or ensure the BRANCH environment variable is available. Write blocked to protect master.");
+      }
       if (process.env.VERCEL_ENV === "preview" && gitConfig.branchSource === "fallback") {
         throw new Error("Preview branch unresolved. Set VERCEL_GIT_COMMIT_REF or GITHUB_BRANCH; write blocked to protect master.");
       }
@@ -199,7 +202,7 @@ module.exports = async (req, res) => {
     } catch (err) {
       if (err.message === "GITHUB_NOT_CONFIGURED") {
         return res.status(503).json({
-          error: "Salvarea necesită GITHUB_TOKEN în Vercel (token GitHub cu acces de scriere la repo).",
+          error: "Salvarea necesită GITHUB_TOKEN în Netlify (token GitHub cu acces de scriere la repo).",
         });
       }
       if (err.message === "CONFLICT") {

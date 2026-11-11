@@ -118,7 +118,7 @@ module.exports = async (req, res) => {
     } catch (err) {
       if (err.message === "GITHUB_NOT_CONFIGURED") {
         return res.status(503).json({
-          error: "Upload necesită GITHUB_TOKEN în Vercel.",
+          error: "Upload necesită GITHUB_TOKEN în Netlify.",
         });
       }
       return res.status(500).json({ error: "Nu am putut încărca imaginea." });
