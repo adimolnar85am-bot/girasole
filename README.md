@@ -13,22 +13,26 @@ Conectează repository-ul și selectează ramura `test/netlify-migration`.
 - Publish directory: `dist`
 - Functions directory: `netlify/functions`
 
-Setează în Netlify, cu scope Builds, Functions și Runtime:
+Configurează în contextul **Production** al site-ului Netlify:
 - `GITHUB_REPO`: `adimolnar85am-bot/girasole`
 - `GITHUB_BRANCH`: `test/netlify-migration`
 - `GITHUB_TOKEN`: fine-grained token limitat la repository, Contents Read and write
-- `ADMIN_PASSWORD`: parolă unică din password manager, minimum 16 caractere
+- `ADMIN_PASSWORD`: parolă unică, aleasă în password manager, minimum 16 caractere
 - `ADMIN_SECRET`: secret aleator hexazecimal, minimum 64 caractere
 
-Generează un secret nou local, de exemplu cu `openssl rand -hex 32`. Nu salva parola, tokenul sau secretul în Git, documentație sau fișiere publice.
+Toate aceste valori sunt folosite doar de Functions. Dacă interfața planului permite scope separat, selectează numai **Functions**. Nu include secretele în Build sau Post processing. Marchează valorile sensibile ca secrete.
 
-După modificarea variabilelor, declanșează un nou deployment.
+Generează un secret nou local, de exemplu cu `openssl rand -hex 32`. Nu salva parola, tokenul sau secretul în Git, documentație sau fișiere publice. După modificarea variabilelor, declanșează un nou deployment.
 
-## Admin
+## Admin și API
 
 Panoul este disponibil la `/admin/`. Autentificarea folosește exclusiv `ADMIN_PASSWORD` și `ADMIN_SECRET` din variabilele Netlify. Nu există parolă implicită sau fallback la un fișier din repository.
 
-Sesiunile expiră după 12 ore. Login-ul aplică o limitare best-effort per instanță: 8 încercări în 15 minute și blocare temporară pentru 15 minute. Pentru protecție globală, activează și rate limiting la nivel de edge/WAF.
+Sesiunile expiră după 12 ore. Login-ul aplică și o limitare best-effort per instanță: 8 încercări în 15 minute și blocare temporară de 15 minute.
+
+Netlify aplică suplimentar rate limiting la nivelul funcțiilor:
+- `/api/content`: 60 cereri pe minut per IP și domeniu.
+- `/api/assets`: 30 cereri pe minut per IP și domeniu.
 
 ## Conținut și imagini
 
