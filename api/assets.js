@@ -112,7 +112,7 @@ module.exports = async (req, res) => {
     }
 
     const raw = String(body.data);
-    const base64 = (raw.includes(",") ? raw.split(",").pop() : raw).replace(/\\s/g, "");
+    const base64 = (raw.includes(",") ? raw.split(",").pop() : raw).replace(/\s/g, "");
     if (!base64 || !/^[A-Za-z0-9+/]*={0,2}$/.test(base64) || base64.length % 4 !== 0) {
       return res.status(400).json({ error: "Fișierul nu este codificat corect." });
     }
