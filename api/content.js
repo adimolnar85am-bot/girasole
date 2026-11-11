@@ -22,15 +22,63 @@ function readLocalDefault() {
   return readLocalJson(CONTENT_PATH);
 }
 
-async function readJsonFromGitHub(relativePath) {
+async function fetchGitHubFile(relativePath) {
   const { owner, repoName, branch, token } = getGitHubConfig();
   const url = `https://api.github.com/repos/${owner}/${repoName}/contents/${relativePath}?ref=${encodeURIComponent(branch)}`;
   const res = await fetch(url, { headers: githubHeaders(token), cache: "no-store" });
-  if (!res.ok) return null;
+  if (!res.ok) return { ok: false, status: res.status, message: res.statusText || "GitHub read failed" };
   const file = await res.json();
-  if (!file.content) return null;
+  if (!file.content) return { ok: false, status: 204, message: "GitHub returned no file content" };
   const content = Buffer.from(file.content.replace(/\n/g, ""), "base64").toString("utf8");
-  return JSON.parse(content);
+  return { ok: true, status: res.status, sha: file.sha, data: JSON.parse(content) };
+}
+
+async function readJsonFromGitHub(relativePath) {
+  const result = await fetchGitHubFile(relativePath);
+  return result.ok ? result.data : null;
+}
+
+function summarizeMenu(menu) {
+  if (Array.isArray(menu?.sections)) {
+    return {
+      categoryCount: menu.sections.length,
+      categories: menu.sections.map((section) => ({
+        title: String(section.title || ""),
+        productCount: Array.isArray(section.items) ? section.items.length : 0,
+      })),
+      productCount: menu.sections.reduce((count, section) => count + (Array.isArray(section.items) ? section.items.length : 0), 0),
+    };
+  }
+  return {
+    categoryCount: ["panini", "caffe"].filter((key) => Array.isArray(menu?.[key])).length,
+    categories: [
+      { title: "Panini", productCount: menu?.panini?.length || 0 },
+      { title: "Caffè", productCount: menu?.caffe?.length || 0 },
+    ].filter((category) => category.productCount > 0),
+    productCount: (menu?.panini?.length || 0) + (menu?.caffe?.length || 0),
+  };
+}
+
+async function getSaveDiagnostics() {
+  const config = getGitHubConfig();
+  const snapshot = await fetchGitHubFile(CONTENT_PATH);
+  return {
+    environment: process.env.VERCEL_ENV || "unknown",
+    deploymentBranch: process.env.VERCEL_GIT_COMMIT_REF || null,
+    branch: config.branch,
+    branchSource: config.branchSource,
+    branchLooksLikePreviewFallback: process.env.VERCEL_ENV === "preview" && config.branchSource === "fallback",
+    githubTokenConfigured: Boolean(config.token),
+    repository: `${config.owner}/${config.repoName}`,
+    contentFile: snapshot.ok ? {
+      status: snapshot.status,
+      sha: snapshot.sha,
+      menu: summarizeMenu(snapshot.data?.menu),
+    } : {
+      status: snapshot.status,
+      message: snapshot.message,
+    },
+  };
 }
 
 async function readFromGitHub() {
@@ -68,11 +116,12 @@ async function writeToGitHub(relativePath, data, message) {
     body: JSON.stringify(body),
   });
 
+  const result = await res.json().catch(() => ({}));
   if (res.status === 409) throw new Error("CONFLICT");
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || "GITHUB_WRITE_FAILED");
+    throw new Error(`GitHub HTTP ${res.status}: ${result.message || "GITHUB_WRITE_FAILED"}`);
   }
+  return { branch, commitSha: result.commit?.sha || null, contentSha: result.content?.sha || null };
 }
 
 module.exports = async (req, res) => {
@@ -101,6 +150,21 @@ module.exports = async (req, res) => {
     return res.status(200).json({ token: signToken(secret) });
   }
 
+  if (req.method === "POST" && body?.action === "diagnostics") {
+    const config = await readAdminConfig();
+    const secret = getSigningSecret(config);
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+    if (!verifyToken(token, secret)) {
+      return res.status(401).json({ error: "Neautorizat. Autentifică-te din nou." });
+    }
+    try {
+      return res.status(200).json(await getSaveDiagnostics());
+    } catch (err) {
+      return res.status(500).json({ error: err.message || "Diagnostic indisponibil." });
+    }
+  }
+
   if (req.method === "GET") {
     const github = await readFromGitHub();
     const content = github?.data || readLocalDefault();
@@ -122,8 +186,16 @@ module.exports = async (req, res) => {
       if (!payload?.meta || !payload?.hero || !payload?.menu) {
         return res.status(400).json({ error: "Conținut invalid. Reîncarcă pagina admin." });
       }
-      await writeToGitHub(CONTENT_PATH, payload, "Actualizare conținut site (admin Girasole)");
-      return res.status(200).json({ ok: true });
+      const gitConfig = getGitHubConfig();
+      if (process.env.VERCEL_ENV === "preview" && gitConfig.branchSource === "fallback") {
+        throw new Error("Preview branch unresolved. Set VERCEL_GIT_COMMIT_REF or GITHUB_BRANCH; write blocked to protect master.");
+      }
+      const saved = await writeToGitHub(CONTENT_PATH, payload, "Actualizare conținut site (admin Girasole)");
+      const verification = await fetchGitHubFile(CONTENT_PATH);
+      if (!verification.ok || verification.data?.menu?.sections?.length !== payload.menu?.sections?.length) {
+        throw new Error("GitHub write returned success, but the saved content could not be verified on the selected branch.");
+      }
+      return res.status(200).json({ ok: true, branch: saved.branch, commitSha: saved.commitSha, menu: summarizeMenu(verification.data.menu) });
     } catch (err) {
       if (err.message === "GITHUB_NOT_CONFIGURED") {
         return res.status(503).json({
@@ -135,7 +207,8 @@ module.exports = async (req, res) => {
           error: "Fișierul a fost modificat între timp. Reîncarcă pagina admin și încearcă din nou.",
         });
       }
-      return res.status(500).json({ error: "Nu am putut salva conținutul." });
+      console.error("[girasole-admin-save]", err.message);
+      return res.status(500).json({ error: `Salvarea a eșuat: ${String(err.message || "eroare necunoscută").slice(0, 260)}` });
     }
   }
 

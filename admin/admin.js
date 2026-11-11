@@ -92,8 +92,9 @@
       },
       body: JSON.stringify(content),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Salvare eșuată.");
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Serverul a răspuns cu HTTP ${res.status}.`);
+    return data;
   }
 
   function field(label, id, value, type = "text", rows) {
@@ -286,12 +287,14 @@
           <div class="menu-import-actions">
             <button type="button" class="btn btn-ghost" data-menu-template>Descarcă Excel</button>
             <button type="button" class="btn btn-ghost" data-menu-export>Exportă JSON</button>
+            <button type="button" class="btn btn-ghost" data-menu-diagnostics>Verifică salvarea</button>
             <label class="btn btn-primary menu-import-file-label">
               Importă fișier
               <input type="file" accept=".xlsx,.xls,.csv,.json,application/json,text/csv" hidden data-menu-import-file />
             </label>
           </div>
           <p class="menu-import-status" data-menu-import-status role="status">Importul este pregătit pentru categorii multiple.</p>
+          <p class="menu-import-status" data-menu-diagnostic-status role="status" aria-live="polite"></p>
         </div>
         <div class="menu-sections-toolbar">
           <div><h3>Categorii meniu</h3><p>Poți redenumi, reordona, adăuga sau elimina categorii și produse.</p></div>
@@ -562,6 +565,37 @@
     const importStatus = adminMain.querySelector("[data-menu-import-status]");
     const templateButton = adminMain.querySelector("[data-menu-template]");
     const exportButton = adminMain.querySelector("[data-menu-export]");
+    const diagnosticsButton = adminMain.querySelector("[data-menu-diagnostics]");
+    const diagnosticsStatus = adminMain.querySelector("[data-menu-diagnostic-status]");
+
+    diagnosticsButton?.addEventListener("click", async () => {
+      if (diagnosticsStatus) { diagnosticsStatus.textContent = "Se verifică ramura și conexiunea GitHub…"; diagnosticsStatus.classList.remove("is-error"); }
+      try {
+        const res = await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+          body: JSON.stringify({ action: "diagnostics" }),
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || `Diagnostic indisponibil (HTTP ${res.status}).`);
+        const menu = data.contentFile?.menu;
+        const summary = menu?.categories?.map((item) => `${item.title}: ${item.productCount}`).join(" · ") || "fără categorii";
+        const lines = [
+          `Mediu: ${data.environment}`,
+          `Ramura de salvare: ${data.branch} (${data.branchSource})`,
+          `GITHUB_TOKEN: ${data.githubTokenConfigured ? "configurat" : "LIPSEȘTE"}`,
+          `Fișier GitHub: HTTP ${data.contentFile?.status}`,
+          `Produse existente: ${menu?.productCount ?? "necunoscut"} în ${menu?.categoryCount ?? 0} categorii`,
+          summary,
+        ];
+        if (data.branchLooksLikePreviewFallback) lines.push("ATENȚIE: preview-ul ar folosi fallback-ul master; salvarea este blocată pentru protecție.");
+        if (diagnosticsStatus) diagnosticsStatus.textContent = lines.join(" | ");
+        if (!data.githubTokenConfigured || data.branchLooksLikePreviewFallback) diagnosticsStatus?.classList.add("is-error");
+      } catch (err) {
+        if (diagnosticsStatus) { diagnosticsStatus.textContent = err.message; diagnosticsStatus.classList.add("is-error"); }
+      }
+    });
 
     exportButton?.addEventListener("click", () => {
       try { downloadMenuJson(); if (importStatus) importStatus.textContent = "Meniul curent a fost exportat în JSON."; }
@@ -905,14 +939,17 @@
     saveStatus.textContent = "Se salvează modificările…";
     saveStatus.classList.remove("is-error", "is-pending");
     try {
-      await saveContent();
+      const saveResult = await saveContent();
       isDirty = false;
-      saveStatus.textContent = "Salvat. Modificările sunt publicate pe site.";
+      const branchMessage = saveResult.branch ? ` pe ramura ${saveResult.branch}` : "";
+      saveStatus.textContent = `Salvat${branchMessage}. ${saveResult.menu?.productCount ?? "Conținutul"} produse / elemente confirmate în GitHub.`;
       saveStatus.classList.remove("is-error", "is-pending");
     } catch (err) {
       isDirty = true;
       saveStatus.textContent = err.message;
       saveStatus.classList.add("is-error");
+      saveStatus.setAttribute("aria-live", "assertive");
+      saveStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } finally {
       isSaving = false;
       setDirty(isDirty);
