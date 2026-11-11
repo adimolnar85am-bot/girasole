@@ -117,65 +117,344 @@
         "title": "Panini",
         "items": [
           {
-            "name": "Prosciutto",
-            "price": "32 lei",
-            "desc": "Prosciutto crudo, rucola, mozzarella"
+            "name": "Coppa & smochine",
+            "price": "34",
+            "desc": "275g | Focaccia (140g), mozzarella (60g), coppa (40g), rucola (20g), chutney de smochine (15g), reducție balsamică (10g)"
+          },
+          {
+            "name": "Prosciutto crudo & brie",
+            "price": "36",
+            "desc": "275g | Focaccia (140g), prosciutto crudo (50g), brie (40g), rucola (20g), roșii uscate (15g), pesto (20g)"
+          },
+          {
+            "name": "Mortadella & fistic",
+            "price": "35",
+            "desc": "310g | Focaccia (140g), mortdella (70g), mozzarella (60g), rucola (20g), pesto (15g), fistic (5g)"
+          },
+          {
+            "name": "Spianata & gorgonzola",
+            "price": "35",
+            "desc": "280g | Focaccia (140g), spianata (60g), cremă de brânză philadelphia (30g), gorgonzola (20g), măsline (15g), busuioc si rucola (20g), nuci (10g)"
+          },
+          {
+            "name": "Prosciutto cotto Caesar",
+            "price": "36",
+            "desc": "275g | Focaccia (140g), prosciutto cotto (80g), sos caesar (40g), parmezan (20g), rucola (20g)"
+          },
+          {
+            "name": "Porchetta",
+            "price": "38",
+            "desc": "280g | Cubano (110g), porchetta (80g), provolone (40g), castraveți murați (30g), muștar dijon (10g), sos aioli (10g)"
+          },
+          {
+            "name": "Somon afumat",
+            "price": "38",
+            "desc": "280g | Bagel (120g), somon afumat (50g), castravete (50g), cremă de brânză philadelphia (30g), iaurt grecesc (20g), capere (10g), mărar (5g)"
           },
           {
             "name": "Caprese",
-            "price": "30 lei",
-            "desc": "Mozzarella, roșii, busuioc"
+            "price": "32",
+            "desc": "335g | Focaccia (140g), mozzarella (80g), roșii (80g), rucola (20g), pesto (20g), reducție balsamică (10g)"
           },
           {
-            "name": "Vegetariano",
-            "price": "28 lei",
-            "desc": "Legume la cuptor, pesto, mozzarella"
+            "name": "Halloumi & ardei copt",
+            "price": "38",
+            "desc": "305g | Cubano (110g), halloumi (80g), ardei copt (40g), philadelphia (30g), rucola (20g), fulgi migdale (15g), miere (10g)"
           },
           {
-            "name": "Tonno",
-            "price": "31 lei",
-            "desc": "Ton, ceapă roșie, lămâie"
-          },
-          {
-            "name": "Formaggi",
-            "price": "29 lei",
-            "desc": "Mix de brânzeturi, miere, nuci"
+            "name": "Prosciutto cotto & brânză de capră",
+            "price": "36",
+            "desc": "295g | Focaccia (140g), prosciutto cotto (80g), telemea de capră (25g), rucola (20g), dijon (10g), miere (10g), ceapă murată (10g)"
           }
         ]
       },
       {
         "id": "cafea",
-        "title": "Caffè",
+        "title": "Cafea",
         "items": [
           {
-            "name": "Espresso",
-            "price": "10 lei",
-            "desc": "Simplu, dublu la cerere"
+            "name": "Espresso dublu",
+            "price": "13",
+            "desc": "40ml"
           },
           {
-            "name": "Americano",
-            "price": "12 lei",
-            "desc": "Espresso lungit cu apă fierbinte"
+            "name": "Cortado",
+            "price": "15",
+            "desc": "80ml"
+          },
+          {
+            "name": "Cortado ovăz",
+            "price": "17",
+            "desc": ""
           },
           {
             "name": "Cappuccino",
-            "price": "14 lei",
-            "desc": "Espresso, lapte texturat"
+            "price": "16",
+            "desc": "200ml"
+          },
+          {
+            "name": "Cappuccino ovăz",
+            "price": "18",
+            "desc": "200ml"
           },
           {
             "name": "Latte",
-            "price": "15 lei",
-            "desc": "Espresso, lapte, spumă fină"
+            "price": "18",
+            "desc": "250ml"
           },
           {
-            "name": "Iced Latte",
-            "price": "16 lei",
-            "desc": "Espresso, lapte, gheață"
+            "name": "Latte ovăz",
+            "price": "20",
+            "desc": "250ml"
           },
           {
-            "name": "Filtru / Batch",
-            "price": "13 lei",
-            "desc": "Cafea de filtru a zilei"
+            "name": "Flat white",
+            "price": "19",
+            "desc": "200ml"
+          },
+          {
+            "name": "Flat white ovăz",
+            "price": "21",
+            "desc": "200ml"
+          },
+          {
+            "name": "Long black",
+            "price": "13",
+            "desc": "150ml"
+          },
+          {
+            "name": "Sirop vanilie",
+            "price": "2",
+            "desc": "20ml"
+          },
+          {
+            "name": "Sirop caramel",
+            "price": "2",
+            "desc": "20ml"
+          },
+          {
+            "name": "Sirop alune",
+            "price": "2",
+            "desc": "20ml"
+          },
+          {
+            "name": "Sirop chocolate cookie",
+            "price": "2",
+            "desc": "20ml"
+          }
+        ]
+      },
+      {
+        "id": "softdrinks",
+        "title": "Soft Drinks",
+        "items": [
+          {
+            "name": "Limonadă Simplă",
+            "price": "15",
+            "desc": "250ml"
+          },
+          {
+            "name": "Limonadă Mentă",
+            "price": "15",
+            "desc": "250ml"
+          },
+          {
+            "name": "Limonadă Căpșuni și Busuioc",
+            "price": "15",
+            "desc": "250ml"
+          },
+          {
+            "name": "Apă Plată Acqua Panna",
+            "price": "10",
+            "desc": "500ml"
+          },
+          {
+            "name": "Apă Minerală San Pellegrino",
+            "price": "10",
+            "desc": "500ml"
+          },
+          {
+            "name": "Vitamin Aqua Multivitamin",
+            "price": "16",
+            "desc": "600ml"
+          },
+          {
+            "name": "Vitamin Aqua Magneziu",
+            "price": "16",
+            "desc": "600ml"
+          },
+          {
+            "name": "Vitamin Aqua Magneziu Zero Zahăr",
+            "price": "16",
+            "desc": "600ml"
+          },
+          {
+            "name": "Satelyte Electrolyte Piersică",
+            "price": "16",
+            "desc": "650ml"
+          },
+          {
+            "name": "Satelyte Electrolyte Grapefruit",
+            "price": "16",
+            "desc": "650ml"
+          },
+          {
+            "name": "Satelyte Electrolyte Punch Fructe",
+            "price": "16",
+            "desc": "650ml"
+          },
+          {
+            "name": "Young Coconut Water",
+            "price": "20",
+            "desc": "320ml"
+          },
+          {
+            "name": "Young Coconut Water Watermelon",
+            "price": "20",
+            "desc": "320ml"
+          },
+          {
+            "name": "Apă tonică San Pellegrino",
+            "price": "18",
+            "desc": "330ml"
+          },
+          {
+            "name": "Aranciata San Pellegrino",
+            "price": "18",
+            "desc": "330ml"
+          },
+          {
+            "name": "Aranciata Rossa San Pellegrino",
+            "price": "18",
+            "desc": "330ml"
+          },
+          {
+            "name": "Limonata San Pellegrino",
+            "price": "18",
+            "desc": "330ml"
+          },
+          {
+            "name": "Pomegranate San Pellegrino",
+            "price": "18",
+            "desc": "330ml"
+          },
+          {
+            "name": "Ginger Beer San Pellegrino",
+            "price": "18",
+            "desc": "200ml"
+          },
+          {
+            "name": "Soculent Original",
+            "price": "19",
+            "desc": "330ml"
+          },
+          {
+            "name": "Yaya Kombucha Ginger",
+            "price": "25",
+            "desc": "330ml"
+          },
+          {
+            "name": "Arizona Green Tea Honey Original",
+            "price": "17",
+            "desc": "450ml"
+          },
+          {
+            "name": "Arizona Green Tea Honey Zero",
+            "price": "17",
+            "desc": "450ml"
+          },
+          {
+            "name": "Arizona Green Tea Pomegranate",
+            "price": "17",
+            "desc": "450ml"
+          },
+          {
+            "name": "Alchemico Makani Black Cherry",
+            "price": "20",
+            "desc": "275ml"
+          },
+          {
+            "name": "PopCola Botanical",
+            "price": "10",
+            "desc": "330ml"
+          },
+          {
+            "name": "PopCola Lime",
+            "price": "10",
+            "desc": "330ml"
+          },
+          {
+            "name": "Figa",
+            "price": "20",
+            "desc": "250ml"
+          },
+          {
+            "name": "RedBull",
+            "price": "17",
+            "desc": "250ml"
+          }
+        ]
+      },
+      {
+        "id": "vinprosecco",
+        "title": "Vin & Prosecco",
+        "items": [
+          {
+            "name": "Masso Antico - Chardonnay & Verdeca Puglia",
+            "price": "99",
+            "desc": "750ml"
+          },
+          {
+            "name": "Domaine Pey Blanc - Aix-en-Provence",
+            "price": "120",
+            "desc": "750ml"
+          },
+          {
+            "name": "Juan Gil Laya - Garnacha & Monastrell",
+            "price": "99",
+            "desc": "750ml"
+          },
+          {
+            "name": "Grande Vento Millesimato Valdobbiadene",
+            "price": "99",
+            "desc": "750ml"
+          }
+        ]
+      },
+      {
+        "id": "supe",
+        "title": "Supe",
+        "items": [
+          {
+            "name": "Supa zilei",
+            "price": "18",
+            "desc": "300ml"
+          }
+        ]
+      },
+      {
+        "id": "deserturi",
+        "title": "Deserturi",
+        "items": [
+          {
+            "name": "Orez cu lapte și scorțișoară",
+            "price": "12",
+            "desc": "180g | Lapte integral (167ml), orez cu bob mare (27g), zahăr (13g), vanilie pudră (2g), sare (un praf), unt (3g), scorțișoară"
+          },
+          {
+            "name": "Tiramisu",
+            "price": "20",
+            "desc": "150g | Mascarpone (61g), pișcoturi (24g), espresso (12g), zahăr (10g), cacao (1g)"
+          },
+          {
+            "name": "Brioșă cu afine și lămâie",
+            "price": "12",
+            "desc": "100g | Făină (34g), zahăr (27g), afine (17g), ouă pasteurizate (17g), ulei floarea soarelui (17g), esență de vanilie (3g), esență de lămâie (3g), praf de copt (1g), sare (1g)"
+          },
+          {
+            "name": "Banana bread cu ciocolată și nuci",
+            "price": "12",
+            "desc": "100g | Banane (34g), făină (25g), unt 10g), ciocolată (10g), zahăr (10g), nuci (10g), ouă pasteurizate (10g), esență de vanilie (2g), praf de copt (1g), sare (1g)"
           }
         ]
       }
