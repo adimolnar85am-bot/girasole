@@ -54,8 +54,12 @@ function sanitizeFilename(name) {
 }
 
 async function uploadToGitHub(relativePath, base64Content, message) {
-  const { owner, repoName, branch, token } = getGitHubConfig();
+  const config = getGitHubConfig();
+  const { owner, repoName, branch, token } = config;
   if (!token) throw new Error("GITHUB_NOT_CONFIGURED");
+  if ((process.env.NETLIFY || process.env.CONTEXT) && config.branchSource === "fallback") {
+    throw new Error("GITHUB_BRANCH is required on Netlify. Upload blocked to protect master.");
+  }
 
   const getUrl = `https://api.github.com/repos/${owner}/${repoName}/contents/${relativePath}?ref=${encodeURIComponent(branch)}`;
   const existingRes = await fetch(getUrl, { headers: githubHeaders(token), cache: "no-store" });
@@ -108,8 +112,8 @@ module.exports = async (req, res) => {
     }
 
     const raw = String(body.data);
-    const base64 = raw.includes(",") ? raw.split(",").pop() : raw;
-    if (!base64 || !/^[A-Za-z0-9+/=\\s]+$/.test(base64) || base64.length % 4 !== 0) {
+    const base64 = (raw.includes(",") ? raw.split(",").pop() : raw).replace(/\\s/g, "");
+    if (!base64 || !/^[A-Za-z0-9+/]*={0,2}$/.test(base64) || base64.length % 4 !== 0) {
       return res.status(400).json({ error: "Fișierul nu este codificat corect." });
     }
     const imageBuffer = Buffer.from(base64, "base64");
