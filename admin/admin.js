@@ -190,7 +190,7 @@
     </div>`;
   }
 
-  function setDirty(value = true) {
+  function setDirty(value = true, preserveError = false) {
     isDirty = value;
     saveBtn.disabled = isSaving || !isDirty;
     saveBtn.classList.toggle("has-changes", isDirty);
@@ -198,7 +198,7 @@
     if (!isDirty && !isSaving) {
       saveStatus.textContent = "Toate modificările sunt salvate.";
       saveStatus.classList.remove("is-error", "is-pending");
-    } else if (isDirty && !isSaving) {
+    } else if (isDirty && !isSaving && !(preserveError && saveStatus.classList.contains("is-error"))) {
       saveStatus.textContent = "Ai modificări nesalvate.";
       saveStatus.classList.remove("is-error");
       saveStatus.classList.add("is-pending");
@@ -952,7 +952,7 @@
       saveStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } finally {
       isSaving = false;
-      setDirty(isDirty);
+      setDirty(isDirty, true);
     }
   });
 
