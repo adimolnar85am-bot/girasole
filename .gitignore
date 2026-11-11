@@ -6,3 +6,5 @@ Thumbs.db
 assets/logo-source.png
 .vercel
 node_modules/
+
+data/admin-config.json

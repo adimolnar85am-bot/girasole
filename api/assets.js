@@ -4,6 +4,7 @@ const { getGitHubConfig, githubHeaders, parseBody, requireAuth } = require("../l
 
 const ASSETS_DIR = "assets";
 const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"]);
+const UPLOAD_EXT = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp"]);
 
 function isImageFile(name) {
   return IMAGE_EXT.has(path.extname(name).toLowerCase());
@@ -34,6 +35,17 @@ async function listGitHubAssets() {
     .filter((item) => item.type === "file" && isImageFile(item.name))
     .map((item) => ({ name: item.name, path: item.path.replace(/\\/g, "/") }))
     .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function hasValidImageSignature(buffer, extension) {
+  if ([".jpg", ".jpeg"].includes(extension)) return buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+  if (extension === ".png") return buffer.length >= 8 && buffer.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+  if (extension === ".gif") {
+    const signature = buffer.subarray(0, 6).toString("ascii");
+    return signature === "GIF87a" || signature === "GIF89a";
+  }
+  if (extension === ".webp") return buffer.length >= 12 && buffer.subarray(0, 4).toString("ascii") === "RIFF" && buffer.subarray(8, 12).toString("ascii") === "WEBP";
+  return false;
 }
 
 function sanitizeFilename(name) {
@@ -75,9 +87,8 @@ async function uploadToGitHub(relativePath, base64Content, message) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
 
   if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -98,14 +109,19 @@ module.exports = async (req, res) => {
 
     const raw = String(body.data);
     const base64 = raw.includes(",") ? raw.split(",").pop() : raw;
-    const sizeBytes = Buffer.from(base64, "base64").length;
-    if (sizeBytes > 4 * 1024 * 1024) {
+    if (!base64 || !/^[A-Za-z0-9+/=\\s]+$/.test(base64) || base64.length % 4 !== 0) {
+      return res.status(400).json({ error: "Fișierul nu este codificat corect." });
+    }
+    const imageBuffer = Buffer.from(base64, "base64");
+    if (!imageBuffer.length) return res.status(400).json({ error: "Imagine invalidă." });
+    if (imageBuffer.length > 4 * 1024 * 1024) {
       return res.status(413).json({ error: "Imaginea e prea mare (max. 4 MB)." });
     }
 
-    let filename = sanitizeFilename(body.filename);
-    if (!isImageFile(filename)) {
-      filename = `${filename.replace(/\.[^.]+$/, "") || "imagine"}.jpg`;
+    const filename = sanitizeFilename(body.filename);
+    const extension = path.extname(filename).toLowerCase();
+    if (!UPLOAD_EXT.has(extension) || !hasValidImageSignature(imageBuffer, extension)) {
+      return res.status(415).json({ error: "Format invalid. Sunt acceptate doar JPEG, PNG, GIF și WEBP valide. SVG nu este permis la upload." });
     }
 
     try {

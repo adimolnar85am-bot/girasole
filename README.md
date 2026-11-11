@@ -1,64 +1,44 @@
 # Girasole — Panini e Caffè
 
-Site minimal pentru [Girasole București](https://www.instagram.com/girasole.bucuresti/).
+Site de prezentare pentru Girasole București.
 
-**Live:** https://girasole-seven.vercel.app  
-**Admin:** https://girasole-seven.vercel.app/admin  
-**Repo:** https://github.com/adimolnar85am-bot/girasole
+- Repository: https://github.com/adimolnar85am-bot/girasole
+- Ramură izolată de test: `test/netlify-migration`
 
-## Pe alt device
+## Configurare Netlify
 
-```bash
-git clone https://github.com/adimolnar85am-bot/girasole.git
-cd girasole
-```
+Conectează repository-ul și selectează ramura `test/netlify-migration`.
 
-Deschide folderul în Cursor, apoi `index.html` în browser.
+- Build command: `npm run build`
+- Publish directory: `dist`
+- Functions directory: `netlify/functions`
 
-## Local
+Setează în Netlify, cu scope Builds, Functions și Runtime:
+- `GITHUB_REPO`: `adimolnar85am-bot/girasole`
+- `GITHUB_BRANCH`: `test/netlify-migration`
+- `GITHUB_TOKEN`: fine-grained token limitat la repository, Contents Read and write
+- `ADMIN_PASSWORD`: parolă unică din password manager, minimum 16 caractere
+- `ADMIN_SECRET`: secret aleator hexazecimal, minimum 64 caractere
 
-Deschide `index.html` în browser. Conținutul se încarcă din `data/site-content.json`.
+Generează un secret nou local, de exemplu cu `openssl rand -hex 32`. Nu salva parola, tokenul sau secretul în Git, documentație sau fișiere publice.
 
-## Panou admin
+După modificarea variabilelor, declanșează un nou deployment.
 
-Proprietarul site-ului poate edita tot conținutul (texte, meniuri, contact, imagini) la **`/admin`**.
+## Admin
 
-### Configurare Vercel (o singură dată)
+Panoul este disponibil la `/admin/`. Autentificarea folosește exclusiv `ADMIN_PASSWORD` și `ADMIN_SECRET` din variabilele Netlify. Nu există parolă implicită sau fallback la un fișier din repository.
 
-1. **GitHub token** (pentru salvare):
-   - GitHub → **Settings** → **Developer settings** → **Personal access tokens**
-   - Creează un token (classic sau fine-grained) cu permisiune **Contents: Read and write** pe repo-ul `girasole`
-   - Copiază token-ul
+Sesiunile expiră după 12 ore. Login-ul aplică o limitare best-effort per instanță: 8 încercări în 15 minute și blocare temporară pentru 15 minute. Pentru protecție globală, activează și rate limiting la nivel de edge/WAF.
 
-2. **Vercel Dashboard** → proiectul `girasole` → **Settings** → **Environment Variables** (doar pentru salvare):
-   - `GITHUB_TOKEN` — token-ul GitHub de mai sus
-   - `GITHUB_REPO` — opțional, implicit `adimolnar85am-bot/girasole`
-   - `GITHUB_BRANCH` — opțional, implicit `master`
+## Conținut și imagini
 
-   Opțional (suprascriu parola din repo): `ADMIN_PASSWORD`, `ADMIN_SECRET`
+- Conținutul site-ului se salvează în `data/site-content.json`.
+- Admin scrie exclusiv în ramura definită de `GITHUB_BRANCH`.
+- Upload acceptă JPEG, PNG, GIF și WEBP valide, maximum 4 MB.
+- SVG-urile existente pot apărea în biblioteca media, dar nu sunt acceptate la upload.
 
-3. **Redeploy** după setarea variabilelor
+## Publicare și predare
 
-### Parolă admin
+Build-ul publică doar fișierele site-ului, Admin UI și `data/site-content.json`. Configurația privată și codul API rămân în afara folderului public `dist/`.
 
-Parola implicită este **`girasole2026`** (fără majuscule, fără semne speciale).
-
-Poți schimba parola editând `data/admin-config.json` în repo sau setând `ADMIN_PASSWORD` în Vercel.
-
-### Utilizare
-
-1. Mergi la `/admin`
-2. Autentifică-te cu parola setată
-3. Editează secțiunile dorite
-4. Apasă **Salvează modificările** — conținutul se scrie în `data/site-content.json` pe GitHub și site-ul se actualizează imediat
-
-Modificările sunt salvate direct în repository (versionate în git). Nu e nevoie de Vercel Blob sau alt serviciu de stocare.
-
-## Conținut
-
-- Hero cu logo și imagini
-- Meniu Panini / Caffè
-- Formular rezervări (email configurabil din admin)
-- Contact + hartă (Strada Austrului nr. 1)
-
-Imaginile se gestionează din admin: preview, upload sau alegere din biblioteca `assets/`. Upload-ul necesită `GITHUB_TOKEN` în Vercel.
+Înainte de domeniul clientului, mută repository-ul și site-ul în conturile clientului, regenerează toate credentialele în conturile lui și testează login, salvarea meniului și upload-ul.

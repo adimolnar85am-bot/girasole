@@ -4,11 +4,15 @@ const {
   readAdminConfig,
   getGitHubConfig,
   githubHeaders,
+  isAdminConfigReady,
   verifyPassword,
   getSigningSecret,
   signToken,
   verifyToken,
   parseBody,
+  checkLoginRateLimit,
+  recordLoginFailure,
+  clearLoginAttempts,
 } = require("../lib/admin-auth");
 
 const CONTENT_PATH = "data/site-content.json";
@@ -125,29 +129,35 @@ async function writeToGitHub(relativePath, data, message) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
 
   if (req.method === "OPTIONS") return res.status(204).end();
 
   const body = parseBody(req);
 
   if (req.method === "POST" && body?.action === "login") {
+    const limit = checkLoginRateLimit(req);
+    if (!limit.allowed) {
+      res.setHeader("Retry-After", String(limit.retryAfter || 900));
+      return res.status(429).json({ error: "Prea multe încercări. Încearcă din nou mai târziu." });
+    }
     const config = await readAdminConfig();
-    const secret = getSigningSecret(config);
-
-    if (!secret) {
+    if (!isAdminConfigReady(config)) {
       return res.status(503).json({
-        error: "Admin nu este configurat. Lipsește fișierul data/admin-config.json sau ADMIN_SECRET.",
+        error: "Admin neconfigurat. Setează ADMIN_PASSWORD (minimum 16 caractere) și ADMIN_SECRET (minimum 64 caractere hex) în Netlify.",
       });
     }
-
     if (!verifyPassword(body.password, config)) {
+      const failure = recordLoginFailure(req);
+      if (failure.locked) {
+        res.setHeader("Retry-After", String(failure.retryAfter));
+        return res.status(429).json({ error: "Prea multe încercări. Accesul este temporar blocat." });
+      }
       return res.status(401).json({ error: "Parolă incorectă." });
     }
-
-    return res.status(200).json({ token: signToken(secret) });
+    clearLoginAttempts(req);
+    return res.status(200).json({ token: signToken(getSigningSecret(config)) });
   }
 
   if (req.method === "POST" && body?.action === "diagnostics") {
@@ -185,6 +195,9 @@ module.exports = async (req, res) => {
       const payload = body;
       if (!payload?.meta || !payload?.hero || !payload?.menu) {
         return res.status(400).json({ error: "Conținut invalid. Reîncarcă pagina admin." });
+      }
+      if (Buffer.byteLength(JSON.stringify(payload), "utf8") > 1_500_000) {
+        return res.status(413).json({ error: "Conținutul este prea mare pentru salvare." });
       }
       const gitConfig = getGitHubConfig();
       if ((process.env.NETLIFY || process.env.CONTEXT) && gitConfig.branchSource === "fallback") {
