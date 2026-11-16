@@ -128,7 +128,7 @@
     if (menuSections && Array.isArray(data.menu?.sections) && data.menu.sections.length) {
       menuSections.innerHTML = data.menu.sections
         .filter((section) => section && String(section.title || "").trim())
-        .map((section) => `<div class="menu-col reveal">
+        .map((section) => `<div class="menu-col reveal is-visible">
           <h3>${escapeHtml(section.title)}</h3>
           <ul class="menu-list">${renderMenuItems(section.items)}</ul>
         </div>`)
