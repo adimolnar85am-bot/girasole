@@ -9,9 +9,8 @@
     "import:content": "node scripts/import-content.mjs"
   },
   "dependencies": {
-    "@sanity/vision": "^5.0.0",
-    "sanity": "^5.0.0",
-    "@sanity/client": "^7.0.0"
+    "sanity": "^6.23.0",
+    "@sanity/client": "^8.16.0"
   },
   "devDependencies": {}
 }
