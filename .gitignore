@@ -16,3 +16,8 @@ data/admin-config.json
 studio/.env
 studio/.env.*
 !studio/.env.example
+
+# Generated build and Studio output
+dist/
+studio/dist/
+studio/.sanity/
