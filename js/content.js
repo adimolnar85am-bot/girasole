@@ -185,7 +185,7 @@
       "settings": *[_type == "siteSettings" && _id == "siteSettings"][0],
       "categories": *[_type == "menuCategory"] | order(order asc)
     }`);
-    const url = `https://${SANITY_PROJECT_ID}.apicdn.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${query}`;
+    const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${query}`;
     const response = await fetch(url, {headers: {"Accept": "application/json"}, signal});
     if (!response.ok) throw new Error(`Sanity API returned ${response.status}`);
     const payload = await response.json();
