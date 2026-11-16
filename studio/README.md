@@ -29,7 +29,7 @@ Publicarea Studio este separata de publicarea site-ului. Nu modifica domeniul pu
 
 Importul preia textele, toate cele 6 categorii, cele 62 de produse si imaginile existente din `data/site-content.json` si `assets/`.
 
-1. In Sanity Manage, verifica daca dataset-ul `production` exista. Daca nu exista, creeaza-l.
+1. In Sanity Manage, verifica daca dataset-ul `production` exista. Daca nu exista, creeaza-l si seteaza vizibilitatea **Public**. Site-ul citeste continutul public fara token.
 2. In Project Settings > API, genereaza un token cu drepturi de scriere pentru import.
 3. Copiaza `.env.example` ca `.env` in acest folder.
 4. Completeaza local `SANITY_PROJECT_ID=zw7ud6de`, `SANITY_DATASET=production` si `SANITY_API_TOKEN` cu tokenul generat.
@@ -52,7 +52,7 @@ Scriptul verifica faptul ca sursa contine exact 62 de produse inainte sa scrie i
 
 Frontend-ul incearca mai intai sa citeasca continutul public din Sanity. Daca Sanity nu raspunde sau continutul nu a fost importat, foloseste fisierul local `data/site-content.json`.
 
-Pentru ca browserul sa poata citi API-ul Sanity, adauga origin-urile site-ului in Sanity Manage > API > CORS Origins. Adauga domeniul Cloudflare Pages de productie si domeniul de preview folosit la testare. Pentru citire publica nu activa credentiale.
+Pentru ca browserul sa poata citi API-ul Sanity, adauga origin-urile site-ului in Sanity Manage > API > CORS Origins. Adauga exact URL-ul Cloudflare Pages de preview si, dupa validare, domeniul final. Pentru citire publica nu activa optiunea Allow credentials. Nu folosi wildcard.
 
 ## Cloudflare Pages
 
