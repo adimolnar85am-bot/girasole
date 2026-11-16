@@ -1,0 +1,50 @@
+import {defineField, defineType} from 'sanity'
+
+export default defineType({
+  name: 'siteSettings',
+  title: 'Setari site',
+  type: 'document',
+  groups: [
+    {name: 'general', title: 'General'},
+    {name: 'hero', title: 'Cover'},
+    {name: 'about', title: 'Despre'},
+    {name: 'gallery', title: 'Galerie foto'},
+    {name: 'contact', title: 'Contact'},
+    {name: 'footer', title: 'Footer'},
+  ],
+  fields: [
+    defineField({name: 'metaTitle', title: 'Titlu SEO', type: 'string', group: 'general'}),
+    defineField({name: 'metaDescription', title: 'Descriere SEO', type: 'text', rows: 3, group: 'general'}),
+    defineField({name: 'heroLine', title: 'Text principal', type: 'string', group: 'hero'}),
+    defineField({name: 'heroCtaPrimary', title: 'Text buton meniu', type: 'string', group: 'hero'}),
+    defineField({
+      name: 'heroSlides', title: 'Fotografii cover', type: 'array', group: 'hero',
+      of: [{type: 'image', options: {hotspot: true}, fields: [{name: 'alt', title: 'Descriere', type: 'string'}]}],
+    }),
+    defineField({name: 'aboutEyebrow', title: 'Eticheta', type: 'string', group: 'about'}),
+    defineField({name: 'aboutTitle', title: 'Titlu', type: 'string', group: 'about'}),
+    defineField({name: 'aboutText', title: 'Text', type: 'text', rows: 5, group: 'about'}),
+    defineField({
+      name: 'aboutImages', title: 'Fotografii Despre', type: 'array', group: 'about',
+      of: [{type: 'image', options: {hotspot: true}, fields: [{name: 'alt', title: 'Descriere', type: 'string'}]}],
+    }),
+    defineField({
+      name: 'gallery', title: 'Galerie foto', type: 'array', group: 'gallery',
+      of: [{type: 'image', options: {hotspot: true}, fields: [{name: 'alt', title: 'Descriere', type: 'string'}]}],
+    }),
+    defineField({name: 'contactEyebrow', title: 'Eticheta', type: 'string', group: 'contact'}),
+    defineField({name: 'contactTitle', title: 'Titlu', type: 'string', group: 'contact'}),
+    defineField({name: 'businessName', title: 'Nume locatie', type: 'string', group: 'contact'}),
+    defineField({name: 'street', title: 'Adresa', type: 'string', group: 'contact'}),
+    defineField({name: 'city', title: 'Oras', type: 'string', group: 'contact'}),
+    defineField({name: 'hours', title: 'Program', type: 'string', group: 'contact'}),
+    defineField({name: 'instagramHandle', title: 'Instagram', type: 'string', group: 'contact'}),
+    defineField({name: 'instagramUrl', title: 'Link Instagram', type: 'url', group: 'contact'}),
+    defineField({name: 'hoursNote', title: 'Nota program', type: 'text', rows: 2, group: 'contact'}),
+    defineField({name: 'mapQuery', title: 'Adresa pentru harta', type: 'string', group: 'contact'}),
+    defineField({name: 'footerText', title: 'Text footer', type: 'string', group: 'footer'}),
+    defineField({name: 'footerInstagramUrl', title: 'Link Instagram footer', type: 'url', group: 'footer'}),
+    defineField({name: 'footerInstagramLabel', title: 'Eticheta Instagram footer', type: 'string', group: 'footer'}),
+  ],
+  preview: {prepare: () => ({title: 'Continut site Girasole'})},
+})
