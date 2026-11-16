@@ -11,6 +11,7 @@ export default defineType({
     {name: 'gallery', title: 'Galerie foto'},
     {name: 'contact', title: 'Contact'},
     {name: 'footer', title: 'Footer'},
+    {name: 'menu', title: 'Meniu'},
   ],
   fields: [
     defineField({name: 'metaTitle', title: 'Titlu SEO', type: 'string', group: 'general'}),
@@ -32,6 +33,10 @@ export default defineType({
       name: 'gallery', title: 'Galerie foto', type: 'array', group: 'gallery',
       of: [{type: 'image', options: {hotspot: true}, fields: [{name: 'alt', title: 'Descriere', type: 'string'}]}],
     }),
+    defineField({name: 'menuEyebrow', title: 'Eticheta meniu', type: 'string', group: 'menu'}),
+    defineField({name: 'menuTitle', title: 'Titlu meniu', type: 'string', group: 'menu'}),
+    defineField({name: 'menuText', title: 'Text introductiv meniu', type: 'text', rows: 3, group: 'menu'}),
+    defineField({name: 'menuFootnote', title: 'Nota meniu', type: 'text', rows: 2, group: 'menu'}),
     defineField({name: 'contactEyebrow', title: 'Eticheta', type: 'string', group: 'contact'}),
     defineField({name: 'contactTitle', title: 'Titlu', type: 'string', group: 'contact'}),
     defineField({name: 'businessName', title: 'Nume locatie', type: 'string', group: 'contact'}),
