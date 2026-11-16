@@ -43,9 +43,9 @@ async function imageReference(relativePath) {
 
 async function imageArray(items, getSrc, getAlt = () => '') {
   const result = []
-  for (const item of items || []) {
+  for (const [index, item] of (items || []).entries()) {
     const ref = await imageReference(getSrc(item))
-    if (ref) result.push({...ref, alt: getAlt(item) || ''})
+    if (ref) result.push({...ref, _key: `image-${index + 1}`, alt: getAlt(item) || ''})
   }
   return result
 }
@@ -94,7 +94,8 @@ const categories = (source.menu?.sections || []).map((section, index) => ({
   _type: 'menuCategory',
   title: section.title || `Categorie ${index + 1}`,
   order: index + 1,
-  items: (section.items || []).map(item => ({
+  items: (section.items || []).map((item, itemIndex) => ({
+    _key: `item-${itemIndex + 1}`,
     _type: 'menuItem',
     name: item.name || '',
     price: item.price || '',
