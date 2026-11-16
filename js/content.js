@@ -244,10 +244,23 @@
     };
   }
 
+  async function refreshFromSanity() {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 7000);
+    try {
+      const sanityData = await loadSanityContent(controller.signal);
+      applySiteContent(sanityData);
+    } catch (sanityError) {
+      console.warn("Sanity nu a raspuns. Continui cu continutul local.", sanityError);
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
   async function loadSiteContent() {
     let data = null;
 
-    // Apply the local copy immediately so the menu never stays blank while Sanity responds.
+    // Load a local copy first so page initialization and reveal animations never wait for Sanity.
     try {
       const apiResponse = await fetch(CONTENT_URL, {cache: "no-store"});
       if (apiResponse.ok) data = await apiResponse.json();
@@ -267,18 +280,8 @@
 
     if (data) applySiteContent(data);
 
-    // Refresh from Sanity in the background, with a timeout and safe local fallback.
-    const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 7000);
-    try {
-      const sanityData = await loadSanityContent(controller.signal);
-      applySiteContent(sanityData);
-      data = sanityData;
-    } catch (sanityError) {
-      console.warn("Sanity nu a raspuns. Pastrez continutul local.", sanityError);
-    } finally {
-      window.clearTimeout(timeout);
-    }
+    // Sanity refresh runs independently and only replaces the local copy when it succeeds.
+    refreshFromSanity();
 
     if (!data) throw new Error("Nu am putut incarca continutul Girasole.");
     return data;
