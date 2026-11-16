@@ -8,3 +8,11 @@ assets/logo-source.png
 node_modules/
 
 data/admin-config.json
+
+# Local environment files
+.env
+.env.*
+!.env.example
+studio/.env
+studio/.env.*
+!studio/.env.example
