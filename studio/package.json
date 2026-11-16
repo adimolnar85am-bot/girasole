@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "sanity dev",
     "build": "sanity build",
-    "deploy": "sanity deploy"
+    "deploy": "sanity deploy",
+    "import:content": "node scripts/import-content.mjs"
   },
   "dependencies": {
     "@sanity/vision": "^5.0.0",
