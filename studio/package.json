@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "sanity": "^6.23.0",
-    "@sanity/client": "^8.11.0"
+    "@sanity/client": "^8.11.0",
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {},
   "type": "module"
