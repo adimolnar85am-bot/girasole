@@ -6,7 +6,7 @@
     "dev": "sanity dev",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "import:content": "node scripts/import-content.mjs"
+    "import:content": "node --env-file=.env scripts/import-content.mjs"
   },
   "dependencies": {
     "sanity": "^6.23.0",
