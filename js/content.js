@@ -161,13 +161,103 @@
     window.__SITE_CONTENT__ = data;
   }
 
+  const SANITY_PROJECT_ID = "zw7ud6de";
+  const SANITY_DATASET = "production";
+  const SANITY_API_VERSION = "2025-08-01";
+
+  function sanityImageUrl(image) {
+    const ref = image?.asset?._ref;
+    if (!ref) return "";
+    const match = /^image-([a-f0-9]+)-(\\d+x\\d+)-([a-z0-9]+)$/i.exec(ref);
+    if (!match) return "";
+    return `https://cdn.sanity.io/images/${SANITY_PROJECT_ID}/${SANITY_DATASET}/${match[1]}-${match[2]}.${match[3]}`;
+  }
+
+  function imageItems(items) {
+    return (items || []).map((item) => ({
+      src: sanityImageUrl(item),
+      alt: item?.alt || "",
+    })).filter((item) => item.src);
+  }
+
+  async function loadSanityContent() {
+    const query = encodeURIComponent(`{
+      "settings": *[_type == "siteSettings" && _id == "siteSettings"][0],
+      "categories": *[_type == "menuCategory"] | order(order asc)
+    }`);
+    const url = `https://${SANITY_PROJECT_ID}.apicdn.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${query}`;
+    const response = await fetch(url, {headers: {"Accept": "application/json"}});
+    if (!response.ok) throw new Error(`Sanity API returned ${response.status}`);
+    const payload = await response.json();
+    const settings = payload?.result?.settings;
+    if (!settings) throw new Error("Continutul Girasole nu a fost importat inca in Sanity.");
+
+    const heroSlides = imageItems(settings.heroSlides).map((item) => item.src);
+    const aboutImages = imageItems(settings.aboutImages);
+    const gallery = imageItems(settings.gallery);
+    const sections = (payload.result.categories || []).map((category) => ({
+      id: category._id,
+      title: category.title,
+      items: (category.items || []).map((item) => ({
+        name: item.name || "",
+        price: item.price || "",
+        desc: item.desc || "",
+      })),
+    }));
+
+    return {
+      meta: {title: settings.metaTitle, description: settings.metaDescription},
+      hero: {line: settings.heroLine, ctaPrimary: settings.heroCtaPrimary, slides: heroSlides},
+      about: {
+        eyebrow: settings.aboutEyebrow,
+        title: settings.aboutTitle,
+        text: settings.aboutText,
+        images: aboutImages,
+        image: aboutImages[0]?.src || "",
+        imageAlt: aboutImages[0]?.alt || "",
+      },
+      gallery,
+      menu: {
+        eyebrow: settings.menuEyebrow,
+        title: settings.menuTitle,
+        text: settings.menuText,
+        footnote: settings.menuFootnote,
+        sections,
+      },
+      contact: {
+        eyebrow: settings.contactEyebrow,
+        title: settings.contactTitle,
+        businessName: settings.businessName,
+        street: settings.street,
+        city: settings.city,
+        hours: settings.hours,
+        instagramHandle: settings.instagramHandle,
+        instagramUrl: settings.instagramUrl,
+        hoursNote: settings.hoursNote,
+        mapQuery: settings.mapQuery,
+      },
+      footer: {
+        text: settings.footerText,
+        instagramUrl: settings.footerInstagramUrl,
+        instagramLabel: settings.footerInstagramLabel,
+      },
+    };
+  }
+
   async function loadSiteContent() {
     let data;
     try {
-      const res = await fetch(CONTENT_URL, { cache: "no-store" });
-      if (res.ok) data = await res.json();
-    } catch {
-      /* fallback */
+      data = await loadSanityContent();
+    } catch (sanityError) {
+      console.warn("Sanity indisponibil, incerc continutul local.", sanityError);
+    }
+    if (!data) {
+      try {
+        const res = await fetch(CONTENT_URL, { cache: "no-store" });
+        if (res.ok) data = await res.json();
+      } catch {
+        /* fallback */
+      }
     }
     if (!data) {
       const res = await fetch(FALLBACK_URL, { cache: "no-store" });
