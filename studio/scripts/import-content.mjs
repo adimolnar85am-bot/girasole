@@ -110,4 +110,10 @@ if (categories.reduce((sum, category) => sum + category.items.length, 0) !== 62)
 await client.createOrReplace(settings)
 for (const category of categories) await client.createOrReplace(category)
 
+// Remove legacy category IDs containing dots. Sanity treats dotted IDs as private.
+for (const category of categories) {
+  const legacyId = category._id.replace(/^menuCategory-/, 'menuCategory.')
+  await client.delete(legacyId)
+}
+
 console.log(`Import finalizat: 1 setari site, ${categories.length} categorii, 62 produse, ${uploaded.size} imagini.`)
