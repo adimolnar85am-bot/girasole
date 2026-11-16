@@ -168,7 +168,7 @@
   function sanityImageUrl(image) {
     const ref = image?.asset?._ref;
     if (!ref) return "";
-    const match = /^image-([a-f0-9]+)-(\\d+x\\d+)-([a-z0-9]+)$/i.exec(ref);
+    const match = /^image-([a-f0-9]+)-(\d+x\d+)-([a-z0-9]+)$/i.exec(ref);
     if (!match) return "";
     return `https://cdn.sanity.io/images/${SANITY_PROJECT_ID}/${SANITY_DATASET}/${match[1]}-${match[2]}.${match[3]}`;
   }
@@ -180,13 +180,13 @@
     })).filter((item) => item.src);
   }
 
-  async function loadSanityContent() {
+  async function loadSanityContent(signal) {
     const query = encodeURIComponent(`{
       "settings": *[_type == "siteSettings" && _id == "siteSettings"][0],
       "categories": *[_type == "menuCategory"] | order(order asc)
     }`);
     const url = `https://${SANITY_PROJECT_ID}.apicdn.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${query}`;
-    const response = await fetch(url, {headers: {"Accept": "application/json"}});
+    const response = await fetch(url, {headers: {"Accept": "application/json"}, signal});
     if (!response.ok) throw new Error(`Sanity API returned ${response.status}`);
     const payload = await response.json();
     const settings = payload?.result?.settings;
@@ -245,25 +245,42 @@
   }
 
   async function loadSiteContent() {
-    let data;
+    let data = null;
+
+    // Apply the local copy immediately so the menu never stays blank while Sanity responds.
     try {
-      data = await loadSanityContent();
-    } catch (sanityError) {
-      console.warn("Sanity indisponibil, incerc continutul local.", sanityError);
+      const apiResponse = await fetch(CONTENT_URL, {cache: "no-store"});
+      if (apiResponse.ok) data = await apiResponse.json();
+    } catch {
+      /* Use the bundled JSON fallback on static hosts. */
     }
+
     if (!data) {
       try {
-        const res = await fetch(CONTENT_URL, { cache: "no-store" });
-        if (res.ok) data = await res.json();
-      } catch {
-        /* fallback */
+        const fallbackResponse = await fetch(FALLBACK_URL, {cache: "no-store"});
+        if (!fallbackResponse.ok) throw new Error(`Local content returned ${fallbackResponse.status}`);
+        data = await fallbackResponse.json();
+      } catch (fallbackError) {
+        console.error("Nu am putut incarca nici continutul local.", fallbackError);
       }
     }
-    if (!data) {
-      const res = await fetch(FALLBACK_URL, { cache: "no-store" });
-      data = await res.json();
+
+    if (data) applySiteContent(data);
+
+    // Refresh from Sanity in the background, with a timeout and safe local fallback.
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 7000);
+    try {
+      const sanityData = await loadSanityContent(controller.signal);
+      applySiteContent(sanityData);
+      data = sanityData;
+    } catch (sanityError) {
+      console.warn("Sanity nu a raspuns. Pastrez continutul local.", sanityError);
+    } finally {
+      window.clearTimeout(timeout);
     }
-    applySiteContent(data);
+
+    if (!data) throw new Error("Nu am putut incarca continutul Girasole.");
     return data;
   }
 
