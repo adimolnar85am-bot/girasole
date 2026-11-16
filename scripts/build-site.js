@@ -14,7 +14,7 @@ function copyDirectory(name) {
   fs.cpSync(source, destination, { recursive: true });
 }
 
-for (const directory of ["admin", "assets", "css", "js"]) {
+for (const directory of ["assets", "css", "js"]) {
   copyDirectory(directory);
 }
 
@@ -27,4 +27,4 @@ fs.copyFileSync(
   path.join(dataDirectory, "site-content.json")
 );
 
-console.log("Girasole static site built in dist/. Private admin config and server source are excluded.");
+console.log("Girasole static site built in dist/. Sanity Studio and legacy admin are kept out of the public site.");
