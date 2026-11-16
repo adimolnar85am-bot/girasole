@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "sanity": "^6.23.0",
-    "@sanity/client": "^8.16.0"
+    "@sanity/client": "^8.11.0"
   },
   "devDependencies": {},
   "type": "module"
