@@ -90,7 +90,7 @@ const settings = {
 }
 
 const categories = (source.menu?.sections || []).map((section, index) => ({
-  _id: `menuCategory.${section.id || index + 1}`,
+  _id: `menuCategory-${section.id || index + 1}`,
   _type: 'menuCategory',
   title: section.title || `Categorie ${index + 1}`,
   order: index + 1,
